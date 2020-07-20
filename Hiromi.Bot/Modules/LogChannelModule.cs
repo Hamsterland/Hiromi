@@ -8,6 +8,7 @@ using Serilog;
 namespace Hiromi.Bot.Modules
 {
     [Name("Log")]
+    [RequireUserPermission(GuildPermission.ManageChannels)]
     public class LogModule : ModuleBase<SocketCommandContext>
     {
         private readonly ILogChannelService _logChannelService;
