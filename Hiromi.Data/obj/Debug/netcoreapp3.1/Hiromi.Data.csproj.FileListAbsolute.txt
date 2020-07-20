@@ -1,0 +1,12 @@
+D:\RiderProjects\Nino\Hiromi.Data\bin\Debug\netcoreapp3.1\Hiromi.Data.deps.json
+D:\RiderProjects\Nino\Hiromi.Data\bin\Debug\netcoreapp3.1\Hiromi.Data.dll
+D:\RiderProjects\Nino\Hiromi.Data\bin\Debug\netcoreapp3.1\Hiromi.Data.pdb
+D:\RiderProjects\Nino\Hiromi.Data\obj\Debug\netcoreapp3.1\Hiromi.Data.csprojAssemblyReference.cache
+D:\RiderProjects\Nino\Hiromi.Data\obj\Debug\netcoreapp3.1\Hiromi.Data.AssemblyInfoInputs.cache
+D:\RiderProjects\Nino\Hiromi.Data\obj\Debug\netcoreapp3.1\Hiromi.Data.AssemblyInfo.cs
+D:\RiderProjects\Nino\Hiromi.Data\obj\Debug\netcoreapp3.1\Hiromi.Data.csproj.CoreCompileInputs.cache
+D:\RiderProjects\Nino\Hiromi.Data\obj\Debug\netcoreapp3.1\Hiromi.Data.dll
+D:\RiderProjects\Nino\Hiromi.Data\obj\Debug\netcoreapp3.1\Hiromi.Data.pdb
+D:\RiderProjects\Nino\Hiromi.Data\bin\Debug\netcoreapp3.1\Hiromi.Data.runtimeconfig.json
+D:\RiderProjects\Nino\Hiromi.Data\bin\Debug\netcoreapp3.1\Hiromi.Data.runtimeconfig.dev.json
+D:\RiderProjects\Nino\Hiromi.Data\obj\Debug\netcoreapp3.1\Hiromi.Data.genruntimeconfig.cache

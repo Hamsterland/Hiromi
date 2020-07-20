@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Discord;
+using Hiromi.Data.Models.Tags;
+
+namespace Hiromi.Services.Tags
+{
+    public interface ITagService
+    {
+        Task InvokeTagAsync(ulong guildId, ulong channelId, Expression<Func<TagEntity, bool>> criteria);
+        Task CreateTagAsync(ulong guildId, ulong authorId, string name, string content);
+        Task ModifyTagAsync(ulong guildId, Expression<Func<TagEntity, bool>> criteria, Action<TagEntity> action);
+        Task DeleteTagAsync(ulong guildId, Expression<Func<TagEntity, bool>> criteria);
+        Task<TagSummary> GetTagSummary(ulong guildId, Expression<Func<TagEntity, bool>> criteria);
+        Task<IEnumerable<TagSummary>> GetTagSummaries(ulong guildId, Expression<Func<TagEntity, bool>> criteria);
+        bool CanMaintain(IGuildUser user, TagSummary tagSummary);
+    }
+}

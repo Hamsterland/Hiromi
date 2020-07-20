@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hiromi.Bot", "Hiromi.Bot\Hiromi.Bot.csproj", "{6B5037BC-6C9C-4A39-802D-09F4D44B1E7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hiromi.Data", "Hiromi.Data\Hiromi.Data.csproj", "{7DA469B8-1DA2-4A67-BF5E-4C1AD0496238}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hiromi.Services", "Hiromi.Services\Hiromi.Services.csproj", "{178273FE-15AD-416F-87E7-B04AFF410404}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B5037BC-6C9C-4A39-802D-09F4D44B1E7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B5037BC-6C9C-4A39-802D-09F4D44B1E7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B5037BC-6C9C-4A39-802D-09F4D44B1E7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B5037BC-6C9C-4A39-802D-09F4D44B1E7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DA469B8-1DA2-4A67-BF5E-4C1AD0496238}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DA469B8-1DA2-4A67-BF5E-4C1AD0496238}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DA469B8-1DA2-4A67-BF5E-4C1AD0496238}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DA469B8-1DA2-4A67-BF5E-4C1AD0496238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{178273FE-15AD-416F-87E7-B04AFF410404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{178273FE-15AD-416F-87E7-B04AFF410404}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{178273FE-15AD-416F-87E7-B04AFF410404}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{178273FE-15AD-416F-87E7-B04AFF410404}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
