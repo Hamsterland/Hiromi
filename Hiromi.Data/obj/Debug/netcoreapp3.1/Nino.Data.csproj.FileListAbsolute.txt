@@ -1,9 +1,0 @@
-D:\RiderProjects\Nino\Nino.Data\bin\Debug\netcoreapp3.1\Nino.Data.deps.json
-D:\RiderProjects\Nino\Nino.Data\bin\Debug\netcoreapp3.1\Nino.Data.dll
-D:\RiderProjects\Nino\Nino.Data\bin\Debug\netcoreapp3.1\Nino.Data.pdb
-D:\RiderProjects\Nino\Nino.Data\obj\Debug\netcoreapp3.1\Nino.Data.csprojAssemblyReference.cache
-D:\RiderProjects\Nino\Nino.Data\obj\Debug\netcoreapp3.1\Nino.Data.AssemblyInfoInputs.cache
-D:\RiderProjects\Nino\Nino.Data\obj\Debug\netcoreapp3.1\Nino.Data.AssemblyInfo.cs
-D:\RiderProjects\Nino\Nino.Data\obj\Debug\netcoreapp3.1\Nino.Data.csproj.CoreCompileInputs.cache
-D:\RiderProjects\Nino\Nino.Data\obj\Debug\netcoreapp3.1\Nino.Data.dll
-D:\RiderProjects\Nino\Nino.Data\obj\Debug\netcoreapp3.1\Nino.Data.pdb
