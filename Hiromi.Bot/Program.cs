@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Hiromi.Data;
 using Hiromi.Services;
 using Hiromi.Services.Listeners;
+using Hiromi.Services.Logging;
 using Hiromi.Services.Tags;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -65,7 +66,8 @@ namespace Hiromi.Bot
                     .AddHostedService<StartupService>()
                     .AddHostedService<DiscordListener>()
                     .AddHostedService<CommandExecutedService>()
-                    .AddScoped<ITagService, TagService>();
+                    .AddScoped<ITagService, TagService>()
+                    .AddScoped<ILogChannelService, LogChannelService>();
             })
             .RunConsoleAsync();
     }
