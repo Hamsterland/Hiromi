@@ -36,7 +36,7 @@ namespace Hiromi.Services.Listeners.Voice
                     .WithColor(Constants.Default)
                     .WithTitle("User Joined Voice Channel")
                     .AddField("User", notification.User.Mention)
-                    .AddField("Channel", notification.VoiceState2)
+                    .AddField("Channel", notification.VoiceState2.VoiceChannel.Name)
                     .WithCurrentTimestamp()
                     .Build();
                 
@@ -50,7 +50,7 @@ namespace Hiromi.Services.Listeners.Voice
                     .WithColor(Constants.Default)
                     .WithTitle("User Left Voice Channel")
                     .AddField("User", notification.User.Mention)
-                    .AddField("Channel", notification.VoiceState2)
+                    .AddField("Channel", notification.VoiceState1.VoiceChannel.Name)
                     .WithCurrentTimestamp()
                     .Build();
              
@@ -66,8 +66,8 @@ namespace Hiromi.Services.Listeners.Voice
                         .WithColor(Constants.Default)
                         .WithTitle("User Changed Voice Channel")
                         .AddField("User", notification.User.Mention)
-                        .AddField("Old Channel", notification.VoiceState1)
-                        .AddField("New Channel", notification.VoiceState2.VoiceChannel)
+                        .AddField("Old Channel", notification.VoiceState1.VoiceChannel.Name)
+                        .AddField("New Channel", notification.VoiceState2.VoiceChannel.Name)
                         .WithCurrentTimestamp()
                         .Build();
              
