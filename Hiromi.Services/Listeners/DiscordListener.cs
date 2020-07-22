@@ -25,7 +25,7 @@ namespace Hiromi.Services.Listeners
             _discordSocketClient.MessageReceived += MessageReceived;
 
             _discordSocketClient.UserVoiceStateUpdated += UserVoiceStaeUpdated;
-
+            
             return Task.CompletedTask;
         }
 

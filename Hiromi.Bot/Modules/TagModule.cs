@@ -13,6 +13,7 @@ using MoreLinq;
 namespace Hiromi.Bot.Modules
 {
     [Name("Tag")]
+    [Summary("For fast retrieval of text and memes")]
     public class TagModule : InteractiveBase
     {
         private readonly ITagService _tagService;
@@ -23,6 +24,7 @@ namespace Hiromi.Bot.Modules
         }
 
         [Command("invoke")]
+        [Summary("Invokes a tag")]
         public async Task Invoke(long id)
         {
             await _tagService.InvokeTagAsync(Context.Guild.Id, Context.Channel.Id, x => x.Id == id);
@@ -30,6 +32,7 @@ namespace Hiromi.Bot.Modules
         
         [Confirm]
         [Command("tag create")]
+        [Summary("Creates a tag")]
         public async Task Create(string name, [Remainder] string content)
         {
             await _tagService.CreateTagAsync(Context.Guild.Id, Context.Channel.Id, name, content);
@@ -37,6 +40,7 @@ namespace Hiromi.Bot.Modules
 
         [Confirm]
         [Command("tag delete")]
+        [Summary("Deletes a tag by name")]
         public async Task Delete(string name)
         {
             var tagSummary = await _tagService.GetTagSummary(Context.Guild.Id, x => x.Name == name);
@@ -51,6 +55,7 @@ namespace Hiromi.Bot.Modules
         
         [Confirm]
         [Command("tag delete")]
+        [Summary("Deletes a tag by Id")]
         public async Task Delete(long id)
         {
             var tagSummary = await _tagService.GetTagSummary(Context.Guild.Id, x => x.Id == id);
@@ -64,10 +69,12 @@ namespace Hiromi.Bot.Modules
         }
 
         [Command("tags")]
-        public async Task Tags(IGuildUser user)
+        [Summary("Lists a user's tags")]
+        public async Task Tags(IGuildUser user = null)
         {
+            user ??= Context.User as IGuildUser;
             var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == user.Id);
-            var tagsList = tags;
+            var tagsList = tags.ToList();
 
             var fields = tagsList
                 .Select((tagSummary, i) => new EmbedFieldBuilder()
@@ -80,20 +87,19 @@ namespace Hiromi.Bot.Modules
                 .Batch(10)
                 .Select(x => new EmbedPage
                 {
-                    Title = $"{user}'s Tags",
-                    AlteranteAuthorIcon = user.GetAvatarUrl(),
+                    Author = new EmbedAuthorBuilder()
+                        .WithName($"{user}'s  Tags")
+                        .WithIconUrl(user.GetAvatarUrl()),
+                    
                     TotalFieldMessage = "Tags",
                     Fields = x.ToList(),
-                    Color = Constants.Default
+                    Color = Constants.DefaultColour
                 }));
 
             var pager = new PaginatedMessage
             {
                 Pages = pages,
-                Options = new PaginatedAppearanceOptions
-                {
-                    Timeout = TimeSpan.FromMinutes(1)
-                }
+                Options = new PaginatedAppearanceOptions {Timeout = TimeSpan.FromMinutes(1)}
             };
 
             await PagedReplyAsync(pager, default);

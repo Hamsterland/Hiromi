@@ -5,12 +5,15 @@ using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
+using Hiromi.Bot.Readers;
 using Hiromi.Data;
 using Hiromi.Services;
+using Hiromi.Services.Help;
 using Hiromi.Services.Hosted;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Logging;
 using Hiromi.Services.Tags;
+using Hiromi.TypeReaders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,6 +64,8 @@ namespace Hiromi.Bot
                     .AddSingleton(discordSocketClient)
                     .AddSingleton(provider =>
                     {
+                        commandService.AddTypeReader<CommandInfo>(new CommandTypeReader());
+                        commandService.AddTypeReader<ModuleInfo>(new ModuleTypeReader());
                         commandService.AddModulesAsync(Assembly.GetEntryAssembly(), provider);
                         return commandService;
                     })
@@ -70,7 +75,8 @@ namespace Hiromi.Bot
                     .AddHostedService<CommandExecutedService>()
                     .AddSingleton<InteractiveService>()
                     .AddScoped<ITagService, TagService>()
-                    .AddScoped<ILogChannelService, LogChannelService>();
+                    .AddScoped<ILogChannelService, LogChannelService>()
+                    .AddScoped<IHelpService, HelpService>();
             })
             .RunConsoleAsync();
     }

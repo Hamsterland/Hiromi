@@ -37,10 +37,10 @@ namespace Hiromi.Services.Listeners.Messages
             {
                 return;
             }
-
+            
             var argPos = 0;
             var prefix = _configuration["Discord:Prefix"];
-
+            
             if (message.HasStringPrefix(prefix, ref argPos))
             {
                 var context = new SocketCommandContext(_discordSocketClient, message);
