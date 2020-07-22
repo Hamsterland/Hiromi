@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Hiromi.Bot.Readers
+namespace Hiromi.Bot.TypeReaders
 {
     public class CommandTypeReader : TypeReader
     {

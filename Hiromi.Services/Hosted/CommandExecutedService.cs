@@ -5,16 +5,19 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Hiromi.Services.Attributes;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace Hiromi.Services.Hosted
 {
     public class CommandExecutedService : IHostedService
     {
         private readonly CommandService _commandService;
+        private readonly ILogger _logger; 
 
-        public CommandExecutedService(CommandService commandService)
+        public CommandExecutedService(CommandService commandService, ILogger logger)
         {
             _commandService = commandService;
+            _logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -29,7 +32,7 @@ namespace Hiromi.Services.Hosted
             return Task.CompletedTask;
         }
         
-        private static async Task CommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)
+        private async Task CommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
             if (result.IsSuccess)
             {
@@ -44,7 +47,7 @@ namespace Hiromi.Services.Hosted
 
             // TODO: Improve Command Error Callback
             await context.Message.AddReactionAsync(new Emoji("❌"));
-            await context.Channel.SendMessageAsync(result.ErrorReason);
+            _logger.Fatal($"{result.ErrorReason}\n{result.Error!.Value}\n{result.IsSuccess}");
         }
     }
 }

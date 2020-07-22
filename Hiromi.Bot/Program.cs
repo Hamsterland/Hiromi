@@ -5,15 +5,13 @@ using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
-using Hiromi.Bot.Readers;
+using Hiromi.Bot.TypeReaders;
 using Hiromi.Data;
-using Hiromi.Services;
 using Hiromi.Services.Help;
 using Hiromi.Services.Hosted;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Logging;
 using Hiromi.Services.Tags;
-using Hiromi.TypeReaders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,7 +46,7 @@ namespace Hiromi.Bot
                     AlwaysDownloadUsers = true,
                     MessageCacheSize = 10000,
                     GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMessages |
-                                     GatewayIntents.GuildMessageReactions | GatewayIntents.GuildVoiceStates,
+                                     GatewayIntents.GuildMessageReactions | GatewayIntents.GuildVoiceStates | GatewayIntents.GuildMembers,
                     LogLevel = LogSeverity.Verbose
                 });
                 
@@ -71,7 +69,7 @@ namespace Hiromi.Bot
                     })
                     .AddDbContext<HiromiContext>(options => options.UseNpgsql(configuration["Postgres:Connection"]))
                     .AddHostedService<StartupService>()
-                    .AddHostedService<DiscordListener>()
+                    .AddHostedService<DiscordSocketListener>()
                     .AddHostedService<CommandExecutedService>()
                     .AddSingleton<InteractiveService>()
                     .AddScoped<ITagService, TagService>()

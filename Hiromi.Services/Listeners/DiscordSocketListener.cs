@@ -7,12 +7,12 @@ using Microsoft.Extensions.Hosting;
 
 namespace Hiromi.Services.Listeners
 {
-    public class DiscordListener : IHostedService
+    public class DiscordSocketListener : IHostedService
     {
         private readonly DiscordSocketClient _discordSocketClient;
         private readonly IMediator _mediator;
 
-        public DiscordListener(
+        public DiscordSocketListener(
             DiscordSocketClient discordSocketClient,
             IMediator mediator)
         {
