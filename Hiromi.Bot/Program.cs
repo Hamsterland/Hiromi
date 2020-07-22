@@ -6,6 +6,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Hiromi.Data;
 using Hiromi.Services;
+using Hiromi.Services.Hosted;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Logging;
 using Hiromi.Services.Tags;

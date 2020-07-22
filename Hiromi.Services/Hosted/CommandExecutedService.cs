@@ -6,16 +6,14 @@ using Discord.WebSocket;
 using Hiromi.Services.Attributes;
 using Microsoft.Extensions.Hosting;
 
-namespace Hiromi.Services
+namespace Hiromi.Services.Hosted
 {
     public class CommandExecutedService : IHostedService
     {
-        private readonly DiscordSocketClient _discordSocketClient;
         private readonly CommandService _commandService;
 
-        public CommandExecutedService(DiscordSocketClient discordSocketClient, CommandService commandService)
+        public CommandExecutedService(CommandService commandService)
         {
-            _discordSocketClient = discordSocketClient;
             _commandService = commandService;
         }
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace Hiromi.Services
+namespace Hiromi.Services.Hosted
 {
     public class StartupService : IHostedService
     {
@@ -34,7 +34,7 @@ namespace Hiromi.Services
                 _logger.Fatal("The bot token was not found.");
                 return;
             }
-
+            
             try
             {
                 await _discordSocketClient.LoginAsync(TokenType.Bot, token);

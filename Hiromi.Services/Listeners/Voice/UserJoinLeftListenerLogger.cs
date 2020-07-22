@@ -58,21 +58,20 @@ namespace Hiromi.Services.Listeners.Voice
                 return; 
             }
 
-            if (notification.VoiceState1.VoiceChannel != null && notification.VoiceState2.VoiceChannel != null)
+            if (notification.VoiceState1.VoiceChannel != null
+                && notification.VoiceState2.VoiceChannel != null
+                && notification.VoiceState1.VoiceChannel != notification.VoiceState2.VoiceChannel)
             {
-                if (notification.VoiceState1.VoiceChannel != notification.VoiceState2.VoiceChannel)
-                {
-                    var embed = new EmbedBuilder()
-                        .WithColor(Constants.Default)
-                        .WithTitle("User Changed Voice Channel")
-                        .AddField("User", notification.User.Mention)
-                        .AddField("Old Channel", notification.VoiceState1.VoiceChannel.Name)
-                        .AddField("New Channel", notification.VoiceState2.VoiceChannel.Name)
-                        .WithCurrentTimestamp()
-                        .Build();
+                var embed = new EmbedBuilder()
+                    .WithColor(Constants.Default)
+                    .WithTitle("User Changed Voice Channel")
+                    .AddField("User", notification.User.Mention)
+                    .AddField("Old Channel", notification.VoiceState1.VoiceChannel.Name)
+                    .AddField("New Channel", notification.VoiceState2.VoiceChannel.Name)
+                    .WithCurrentTimestamp()
+                    .Build();
              
-                    await (channel as ITextChannel).SendMessageAsync(embed: embed);
-                }
+                await (channel as ITextChannel).SendMessageAsync(embed: embed);
             }
         }
     }
