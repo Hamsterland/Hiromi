@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 using Hiromi.Data;
@@ -67,6 +68,7 @@ namespace Hiromi.Bot
                     .AddHostedService<StartupService>()
                     .AddHostedService<DiscordListener>()
                     .AddHostedService<CommandExecutedService>()
+                    .AddSingleton<InteractiveService>()
                     .AddScoped<ITagService, TagService>()
                     .AddScoped<ILogChannelService, LogChannelService>();
             })
