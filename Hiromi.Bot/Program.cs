@@ -7,6 +7,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Hiromi.Bot.TypeReaders;
 using Hiromi.Data;
+using Hiromi.Data.Models.Tags;
 using Hiromi.Services;
 using Hiromi.Services.Help;
 using Hiromi.Services.Hosted;
@@ -66,6 +67,7 @@ namespace Hiromi.Bot
                     {
                         commandService.AddTypeReader<CommandInfo>(new CommandTypeReader());
                         commandService.AddTypeReader<ModuleInfo>(new ModuleTypeReader());
+                        commandService.AddTypeReader<TagSummary>(new TagSummaryTypeReader());
                         commandService.AddModulesAsync(Assembly.GetEntryAssembly(), provider);
                         return commandService;
                     })

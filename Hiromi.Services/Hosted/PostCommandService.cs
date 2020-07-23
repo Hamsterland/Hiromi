@@ -1,9 +1,7 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Hiromi.Services.Attributes;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
@@ -38,11 +36,7 @@ namespace Hiromi.Services.Hosted
         {
             if (result.IsSuccess)
             {
-                foreach (var attribute in command.Value.Attributes)
-                {
-                    if (attribute is ConfirmAttribute)
-                        await context.Message.AddReactionAsync(new Emoji("✅"));
-                }
+                // Blank
             }
             else
             {

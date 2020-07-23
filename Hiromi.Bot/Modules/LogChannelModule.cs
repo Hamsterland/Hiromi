@@ -2,7 +2,6 @@
 using Discord;
 using Discord.Commands;
 using Hiromi.Services;
-using Hiromi.Services.Attributes;
 using Hiromi.Services.Logging;
 
 
@@ -20,21 +19,21 @@ namespace Hiromi.Bot.Modules
             _logChannelService = logChannelService;
         }
 
-        [Confirm]
         [Command("log channel set")]
         [Summary("Sets the log channel")]
         public async Task LogChannelSet(ITextChannel channel = null)
         {
             channel ??= Context.Channel as ITextChannel;
             await _logChannelService.SetLogChannelAsync(Context.Guild.Id, channel.Id);
+            await ReplyAsync($"Set the log channel to {channel.Mention} ({channel.Id}).");
         }
         
-        [Confirm]
         [Command("log channel remove")]
         [Summary("Removes the log channel (disables logging)")]
         public async Task LogChannelRemove()
         {
             await _logChannelService.RemoveLogChannelAsync(Context.Guild.Id);
+            await ReplyAsync("Removed the log channel.");
         }
 
         [Command("log channel info")]

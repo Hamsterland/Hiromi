@@ -25,7 +25,9 @@ namespace Hiromi.Services.Tags
             _hiromiContext = hiromiContext;
             _discordSocketClient = discordSocketClient;
         }
-
+        
+        // Same logic as the Type Reader
+        // Need to find a better way of handling this, but it works for now
         public async Task InvokeTagAsync(ulong guildId, ulong channelId, string name)
         {
             var tag = await _hiromiContext
@@ -93,34 +95,19 @@ namespace Hiromi.Services.Tags
                 Name = name,
                 Content = content
             });
-
-            await _hiromiContext.SaveChangesAsync();
-        }
-
-        public async Task ModifyTagAsync(ulong guildId, string name, Action<TagEntity> action)
-        {
-            var tag = await _hiromiContext
-                .Tags
-                .Where(x => x.GuildId == guildId)
-                .Where(x => x.Name == name)
-                .FirstOrDefaultAsync();
-
-            if (tag == null)
-                return;
-
-            action(tag);
-            await _hiromiContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteTagAsync(ulong guildId, string name)
-        {
-            var tag = await _hiromiContext
-                .Tags
-                .Where(x => x.GuildId == guildId)
-                .Where(x => x.Name == name)
-                .FirstOrDefaultAsync();
             
-            _hiromiContext.Remove(tag!);
+            await _hiromiContext.SaveChangesAsync();
+        }
+
+        public async Task ModifyTagAsync(TagSummary tagSummary, Action<TagSummary> action)
+        {
+            action(tagSummary);
+            await _hiromiContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteTagAsync(TagSummary tagSummary)
+        {
+            _hiromiContext.Remove(tagSummary);
             await _hiromiContext.SaveChangesAsync();
         }
 

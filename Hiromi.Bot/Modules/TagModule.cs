@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
+using Hiromi.Data.Models.Tags;
 using Hiromi.Services;
-using Hiromi.Services.Attributes;
 using Hiromi.Services.Exceptions;
 using Hiromi.Services.Tags;
 using MoreLinq;
@@ -35,60 +35,55 @@ namespace Hiromi.Bot.Modules
             }
             catch (TagAlreadyExistsException)
             {
-                await ReplyAsync($"A tag by name \"{name}\" already exists. If you are the owner of this tag " +
-                                 "or have permission to manage messages, you can delete and recreate it.");
+                await ReplyAsync($"A tag by name \"{name}\" already exists.");
             }
         }
         
         [Command("tag delete")]
         [Summary("Deletes a tag by Id")]
-        public async Task Delete(string name)
+        public async Task Delete(TagSummary tagSummary)
         {
-            var tag = await _tagService.GetTagSummary(Context.Guild.Id, name);
-
-            if (tag is null)
-            {
-                await ReplyAsync($"No tag by name \"{name}\" found.");
-                return;
-            }
-
-            if (!tag.CanMaintain(Context.User as IGuildUser))
+            if (!tagSummary.CanMaintain(Context.User as IGuildUser))
             {
                 await ReplyAsync("You cannot delete this tag.");
                 return;
             }
 
-            await _tagService.DeleteTagAsync(Context.Guild.Id, name);
-            await ReplyAsync($"Deleted tag \"{tag.Name}\" ({tag.Id}).");
+            await _tagService.DeleteTagAsync(tagSummary);
+            await ReplyAsync($"Deleted tag \"{tagSummary.Name}\" ({tagSummary.Id}).");
         }
         
         [Command("tag transfer")]
-        [Summary("Transfers a tag")]
-        public async Task Transfer(IGuildUser user, string name)
+        [Summary("Transfers ownership of a tag")]
+        public async Task Transfer(TagSummary tagSummary, IGuildUser user)
         {
-            var tag = await _tagService.GetTagSummary(Context.Guild.Id, name);
-
-            if (tag is null)
+            if (!tagSummary.CanMaintain(Context.User as IGuildUser))
             {
-                await ReplyAsync($"No tag by name \"{name}\" found.");
+                await ReplyAsync($"{Context.User.Mention} you cannot transfer tag \"{tagSummary.Name}\"");
                 return;
             }
-
-            if (!tag.CanMaintain(Context.User as IGuildUser))
-            {
-                await ReplyAsync("You cannot to transfer this tag.");
-                return;
-            }
-
-            await _tagService.ModifyTagAsync(Context.Guild.Id, name, x => x.Name = name);
-            await ReplyAsync($"Transferred tag \"{tag.Name}\" ({tag.Id}) to {user}.");
+            
+            await _tagService.ModifyTagAsync(tagSummary, x => x.OwnerId = user.Id);
+            await ReplyAsync($"Transferred tag \"{tagSummary.Name}\" ({tagSummary.Id}) to {user}.");
         }
 
         [Command("tag info")]
         [Summary("Provides tag information")]
-        public async Task Info()
+        public async Task Info(TagSummary tagSummary)
         {
-            
+            var owner = Context.Guild.GetUser(tagSummary.OwnerId);
+            var author = Context.Guild.GetUser(tagSummary.AuthorId);
+
+            var embed = new EmbedBuilder()
+                .WithColor(Constants.DefaultColour)
+                .AddField("Name", tagSummary.Name)
+                .AddField("Id", tagSummary.Id)
+                .AddField("Uses", tagSummary.Uses)
+                .AddField("Owner", owner)
+                .AddField("Author", author)
+                .Build();
+
+            await ReplyAsync(embed: embed);
         }
 
         [Command("tags")]
@@ -127,7 +122,7 @@ namespace Hiromi.Bot.Modules
             var pager = new PaginatedMessage
             {
                 Pages = pages,
-                Options = new PaginatedAppearanceOptions {Timeout = TimeSpan.FromMinutes(1)}
+                Options = new PaginatedAppearanceOptions { Timeout = TimeSpan.FromMinutes(1) }
             };
 
             await PagedReplyAsync(pager, default);

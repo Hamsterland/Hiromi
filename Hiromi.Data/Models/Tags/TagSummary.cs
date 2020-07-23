@@ -13,6 +13,7 @@ namespace Hiromi.Data.Models.Tags
         public string Name { get; set; }
         public string Content { get; set; }
         public int Uses { get; set; }
+        public DateTime TimeCreated { get; set; }
 
         public bool CanMaintain(IGuildUser user)
         {
