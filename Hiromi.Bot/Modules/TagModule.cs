@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
-using Discord.WebSocket;
-using Hiromi.Bot.TypeReaders;
 using Hiromi.Services;
 using Hiromi.Services.Attributes;
+using Hiromi.Services.Exceptions;
 using Hiromi.Services.Tags;
 using MoreLinq;
 
@@ -25,27 +24,43 @@ namespace Hiromi.Bot.Modules
             _tagService = tagService;
         }
         
-        [Confirm]
         [Command("tag create")]
         [Summary("Creates a tag")]
         public async Task Create(string name, [Remainder] string content)
         {
-            await _tagService.CreateTagAsync(Context.Guild.Id, Context.User.Id, name, content);
+            try
+            {
+                await _tagService.CreateTagAsync(Context.Guild.Id, Context.User.Id, name, content);
+                await ReplyAsync($"Created tag \"{name}\" (See `tag info {name} for its Id`).");
+            }
+            catch (TagAlreadyExistsException)
+            {
+                await ReplyAsync($"A tag by name \"{name}\" already exists. If you are the owner of this tag " +
+                                 "or have permission to manage messages, you can delete and recreate it.");
+            }
         }
-        
+
         [Confirm]
         [Command("tag delete")]
         [Summary("Deletes a tag by Id")]
         public async Task Delete(long id)
         {
-            var tagSummary = await _tagService.GetTagSummary(Context.Guild.Id, x => x.Id == id);
+            var tag = await _tagService.GetTagSummary(Context.Guild.Id, x => x.Id == id);
 
-            if (!_tagService.CanMaintain(Context.User as IGuildUser, tagSummary))
+            if (tag is null)
             {
-                throw new Exception("Insufficient permissions");
+                await ReplyAsync($"No tag by Id \"{id}\" found.");
+                return;
             }
-            
+
+            if (!tag.CanMaintain(Context.User as IGuildUser))
+            {
+                await ReplyAsync("You cannot delete this tag.");
+                return;
+            }
+
             await _tagService.DeleteTagAsync(Context.Guild.Id, x => x.Id == id);
+            await ReplyAsync($"Deleted tag \"{tag.Name}\" ({tag.Id}).");
         }
 
         [Confirm]
@@ -53,17 +68,26 @@ namespace Hiromi.Bot.Modules
         [Summary("Transfers a tag")]
         public async Task Transfer(IGuildUser user, long id)
         {
-            var tagSummary = await _tagService.GetTagSummary(Context.Guild.Id, x => x.Id == id);
-            
-            if (!_tagService.CanMaintain(Context.User as IGuildUser, tagSummary))
+            var tag = await _tagService.GetTagSummary(Context.Guild.Id, x => x.Id == id);
+
+            if (tag is null)
             {
-                throw new Exception("Insufficient permissions");
+                await ReplyAsync($"No tag by Id \"{id}\" found.");
+                return;
+            }
+
+            if (!tag.CanMaintain(Context.User as IGuildUser))
+            {
+                await ReplyAsync("You cannot to transfer this tag.");
+                return;
             }
 
             await _tagService.ModifyTagAsync(
-                Context.Guild.Id, 
-                x => x.Id == id, 
+                Context.Guild.Id,
+                x => x.Id == id,
                 x => x.OwnerId = user.Id);
+
+            await ReplyAsync($"Transferred tag \"{tag.Name}\" ({tag.Id}) to {user}.");
         }
 
         [Command("tags")]
@@ -74,12 +98,17 @@ namespace Hiromi.Bot.Modules
             var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == user.Id);
             var tagsList = tags.ToList();
 
+            if (!tagsList.Any())
+            {
+                await ReplyAsync($"{user} does not have any tags.");
+                return;
+            }
+
             var fields = tagsList
                 .Select(tagSummary => new EmbedFieldBuilder()
                     .WithName(tagSummary.Id.ToString())
                     .WithValue(tagSummary.Name)
-                    .WithIsInline(true))
-                .ToList();
+                    .WithIsInline(true));
 
             var pages = new List<EmbedPage>(fields
                 .Batch(10)
@@ -88,7 +117,7 @@ namespace Hiromi.Bot.Modules
                     Author = new EmbedAuthorBuilder()
                         .WithName($"{user}'s Tags")
                         .WithIconUrl(user.GetAvatarUrl()),
-                    
+
                     TotalFieldMessage = "Tags",
                     Fields = x.ToList(),
                     Color = Constants.DefaultColour
@@ -97,7 +126,7 @@ namespace Hiromi.Bot.Modules
             var pager = new PaginatedMessage
             {
                 Pages = pages,
-                Options = new PaginatedAppearanceOptions { Timeout = TimeSpan.FromMinutes(1) }
+                Options = new PaginatedAppearanceOptions {Timeout = TimeSpan.FromMinutes(1)}
             };
 
             await PagedReplyAsync(pager, default);

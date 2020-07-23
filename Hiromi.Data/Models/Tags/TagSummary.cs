@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Discord;
 
 namespace Hiromi.Data.Models.Tags
 {
@@ -12,6 +13,11 @@ namespace Hiromi.Data.Models.Tags
         public string Name { get; set; }
         public string Content { get; set; }
         public int Uses { get; set; }
+
+        public bool CanMaintain(IGuildUser user)
+        {
+            return OwnerId == user.Id || user.GuildPermissions.ManageMessages;
+        }
         
         public static readonly Expression<Func<TagEntity, TagSummary>> FromEntityProjection = tagEntity => new TagSummary
         {

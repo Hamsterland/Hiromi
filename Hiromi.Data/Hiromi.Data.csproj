@@ -6,6 +6,7 @@
     <UserSecretsId>1866adaa-0f86-45a6-a753-b41f95bf57f8</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="2.3.0-dev-20200718.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.6" />

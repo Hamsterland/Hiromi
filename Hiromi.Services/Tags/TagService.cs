@@ -8,6 +8,7 @@ using Discord;
 using Discord.WebSocket;
 using Hiromi.Data;
 using Hiromi.Data.Models.Tags;
+using Hiromi.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hiromi.Services.Tags
@@ -74,7 +75,9 @@ namespace Hiromi.Services.Tags
                 .FirstOrDefaultAsync();
 
             if (tag != null)
-                throw new Exception("Tag already exists");
+            {
+                throw new TagAlreadyExistsException(default);
+            }
 
             _hiromiContext.Add(new TagEntity
             {
@@ -120,32 +123,22 @@ namespace Hiromi.Services.Tags
 
         public async Task<TagSummary> GetTagSummary(ulong guildId, Expression<Func<TagEntity, bool>> criteria)
         {
-            var tag = await _hiromiContext
+            return await _hiromiContext
                 .Tags
                 .Where(x => x.GuildId == guildId)
                 .Where(criteria)
                 .Select(TagSummary.FromEntityProjection)
                 .FirstOrDefaultAsync();
-
-            if (tag is null)
-                throw new Exception("Tag not found");
-
-            return tag;
         }
 
         public async Task<IEnumerable<TagSummary>> GetTagSummaries(ulong guildId, Expression<Func<TagEntity, bool>> criteria)
         {
-            var tags = await _hiromiContext
+            return await _hiromiContext
                 .Tags
                 .Where(x => x.GuildId == guildId)
                 .Where(criteria)
                 .Select(TagSummary.FromEntityProjection)
                 .ToListAsync();
-
-            if (tags.Count < 0)
-                throw new Exception("No Tags found"); 
-
-            return tags;
         }
 
         public bool CanMaintain(IGuildUser user, TagSummary tagSummary)
