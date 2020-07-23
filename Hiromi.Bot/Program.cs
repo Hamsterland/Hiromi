@@ -7,10 +7,12 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Hiromi.Bot.TypeReaders;
 using Hiromi.Data;
+using Hiromi.Services;
 using Hiromi.Services.Help;
 using Hiromi.Services.Hosted;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Logging;
+using Hiromi.Services.MyAnimeList;
 using Hiromi.Services.Tags;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -71,6 +73,7 @@ namespace Hiromi.Bot
                     .AddHostedService<StartupService>()
                     .AddHostedService<DiscordSocketListener>()
                     .AddHostedService<PostCommandService>()
+                    .AddSingleton<MALStatusService>()
                     .AddSingleton<InteractiveService>()
                     .AddScoped<ITagService, TagService>()
                     .AddScoped<ILogChannelService, LogChannelService>()

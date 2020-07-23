@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hiromi.Services.Listeners.Voice
 {
-    public class UserJoinLeftListenerLogger : INotificationHandler<UserVoiceStateUpdatedNotification>
+    public class UserJoinLeftLogger : INotificationHandler<UserVoiceStateUpdatedNotification>
     {
         private readonly HiromiContext _hiromiContext;
         private readonly DiscordSocketClient _discordSocketClient;
 
-        public UserJoinLeftListenerLogger(
+        public UserJoinLeftLogger(
             HiromiContext hiromiContext, 
             DiscordSocketClient discordSocketClient)
         {
