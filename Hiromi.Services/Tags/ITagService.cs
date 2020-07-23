@@ -9,7 +9,7 @@ namespace Hiromi.Services.Tags
 {
     public interface ITagService
     {
-        Task InvokeTagAsync(ulong guildId, ulong channelId, Expression<Func<TagEntity, bool>> criteria);
+        Task InvokeTagAsync(ulong guildId, ulong channelId, string name);
         Task CreateTagAsync(ulong guildId, ulong authorId, string name, string content);
         Task ModifyTagAsync(ulong guildId, Expression<Func<TagEntity, bool>> criteria, Action<TagEntity> action);
         Task DeleteTagAsync(ulong guildId, Expression<Func<TagEntity, bool>> criteria);

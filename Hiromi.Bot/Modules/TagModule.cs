@@ -19,19 +19,10 @@ namespace Hiromi.Bot.Modules
     public class TagModule : InteractiveBase
     {
         private readonly ITagService _tagService;
-        private readonly DiscordSocketClient _discordSocketClient;
 
-        public TagModule(ITagService tagService, DiscordSocketClient discordSocketClient)
+        public TagModule(ITagService tagService)
         {
             _tagService = tagService;
-            _discordSocketClient = discordSocketClient;
-        }
-
-        [Command("invoke")]
-        [Summary("Invokes a tag")]
-        public async Task Invoke(long id)
-        {
-            await _tagService.InvokeTagAsync(Context.Guild.Id, Context.Channel.Id, x => x.Id == id);
         }
         
         [Confirm]
@@ -40,21 +31,6 @@ namespace Hiromi.Bot.Modules
         public async Task Create(string name, [Remainder] string content)
         {
             await _tagService.CreateTagAsync(Context.Guild.Id, Context.User.Id, name, content);
-        }
-
-        [Confirm]
-        [Command("tag delete")]
-        [Summary("Deletes a tag by name")]
-        public async Task Delete(string name)
-        {
-            var tagSummary = await _tagService.GetTagSummary(Context.Guild.Id, x => x.Name == name);
-
-            if (!_tagService.CanMaintain(Context.User as IGuildUser, tagSummary))
-            {
-                throw new Exception("Insufficient permissions");
-            }
-            
-            await _tagService.DeleteTagAsync(Context.Guild.Id, x => x.Name == name);
         }
         
         [Confirm]

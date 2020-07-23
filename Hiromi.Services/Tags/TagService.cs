@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -24,19 +25,41 @@ namespace Hiromi.Services.Tags
             _discordSocketClient = discordSocketClient;
         }
 
-        public async Task InvokeTagAsync(ulong guildId, ulong channelId, Expression<Func<TagEntity, bool>> criteria)
+        public async Task InvokeTagAsync(ulong guildId, ulong channelId, string name)
         {
             var tag = await _hiromiContext
                 .Tags
                 .Where(x => x.GuildId == guildId)
-                .Where(criteria)
+                .Where(x => x.Name == name)
                 .FirstOrDefaultAsync();
 
+            var channel = _discordSocketClient.GetChannel(channelId) as IMessageChannel;
+            
             if (tag is null)
-                return;
+            {
+                var tags = await _hiromiContext
+                    .Tags
+                    .FromSqlRaw("SELECT * FROM \"Tags\" WHERE SIMILARITY(\"Name\", {0}) > 0.1", name)
+                    .Select(TagSummary.FromEntityProjection)
+                    .ToListAsync();
 
-            var channel = _discordSocketClient.GetChannel(channelId);
-            await (channel as IMessageChannel).SendMessageAsync(tag.Content);
+                var builder = new StringBuilder()
+                    .AppendLine($"No tag called \"{name}\" found. Did you mean?")
+                    .AppendLine()
+                    .AppendLine("```");
+
+                foreach (var t in tags)
+                {
+                    builder.AppendLine(t.Name);
+                }
+
+                builder.AppendLine("```");
+                
+                await channel.SendMessageAsync(builder.ToString());
+                return;
+            }
+            
+            await channel.SendMessageAsync(tag.Content, allowedMentions: AllowedMentions.None);
 
             tag.Uses++;
             await _hiromiContext.SaveChangesAsync();

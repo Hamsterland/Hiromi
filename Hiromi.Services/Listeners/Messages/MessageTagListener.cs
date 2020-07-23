@@ -34,7 +34,7 @@ namespace Hiromi.Services.Listeners.Messages
             if (match.Success)
             {
                 var name = match.Groups[1].Value;
-                await _tagService.InvokeTagAsync(user.GuildId, channel.Id, x => x.Name == name);
+                await _tagService.InvokeTagAsync(user.GuildId, channel.Id, name);
             }
         }
     }
