@@ -46,7 +46,7 @@ namespace Hiromi.Bot
                     AlwaysDownloadUsers = true,
                     MessageCacheSize = 10000,
                     GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMessages |
-                                     GatewayIntents.GuildMessageReactions | GatewayIntents.GuildVoiceStates | GatewayIntents.GuildMembers,
+                                     GatewayIntents.GuildMessageReactions | GatewayIntents.GuildVoiceStates | GatewayIntents.GuildPresences,
                     LogLevel = LogSeverity.Verbose
                 });
                 
@@ -70,7 +70,7 @@ namespace Hiromi.Bot
                     .AddDbContext<HiromiContext>(options => options.UseNpgsql(configuration["Postgres:Connection"]))
                     .AddHostedService<StartupService>()
                     .AddHostedService<DiscordSocketListener>()
-                    .AddHostedService<CommandExecutedService>()
+                    .AddHostedService<PostCommandService>()
                     .AddSingleton<InteractiveService>()
                     .AddScoped<ITagService, TagService>()
                     .AddScoped<ILogChannelService, LogChannelService>()

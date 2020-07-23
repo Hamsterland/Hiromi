@@ -1,20 +1,22 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using Hiromi.Services.Attributes;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace Hiromi.Services.Hosted
 {
-    public class CommandExecutedService : IHostedService
+    public class PostCommandService : IHostedService
     {
         private readonly CommandService _commandService;
         private readonly ILogger _logger; 
 
-        public CommandExecutedService(CommandService commandService, ILogger logger)
+        public PostCommandService(
+            CommandService commandService,
+            ILogger logger)
         {
             _commandService = commandService;
             _logger = logger;
@@ -41,13 +43,11 @@ namespace Hiromi.Services.Hosted
                     if (attribute is ConfirmAttribute)
                         await context.Message.AddReactionAsync(new Emoji("✅"));
                 }
-
-                return; 
             }
-
-            // TODO: Improve Command Error Callback
-            await context.Message.AddReactionAsync(new Emoji("❌"));
-            _logger.Fatal($"{result.ErrorReason}\n{result.Error!.Value}\n{result.IsSuccess}");
+            else
+            {
+                _logger.Fatal(result.ErrorReason);
+            }
         }
     }
 }

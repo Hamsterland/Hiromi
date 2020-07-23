@@ -24,7 +24,7 @@ namespace Hiromi.Modules
             _commandService = commandService;
             _helpService = helpService;
         }
-
+        
         [Command("help")]
         [Alias("h")]
         [Summary("The starting point")]
@@ -49,8 +49,8 @@ namespace Hiromi.Modules
             await PagedReplyAsync(pagedEmbed, new ReactionList());
         }
 
-        [Command("module")]
-        [Alias("mod")]
+        [Command("help")]
+        [Alias("h")]
         [Summary("Module reference")]
         public async Task Help(ModuleInfo module)
         {
@@ -68,10 +68,10 @@ namespace Hiromi.Modules
             await PagedReplyAsync(pagedEmbed, new ReactionList());
         }
         
-        [Command("command")]
-        [Alias("cmd")]
+        [Command("help")]
+        [Alias("h")]
         [Summary("Command reference")]
-        public async Task Help(CommandInfo command)
+        public async Task Help([Remainder] CommandInfo command)
         {
             var embed = new EmbedBuilder()
                 .WithColor(Constants.DefaultColour)
