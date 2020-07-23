@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel.Design;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -26,6 +27,14 @@ namespace Hiromi.Services.Listeners.Messages
                 || !(message.Author is IGuildUser user)
                 || !(message.Channel is ITextChannel channel)
                 || user.IsBot)
+            {
+                return;
+            }
+
+            if (channel.Id == 636631013715476493 
+                || channel.Id == 636631078693765144
+                || channel.Id == 636630976373587994
+                || channel.Id == 636684229652119579)
             {
                 return;
             }

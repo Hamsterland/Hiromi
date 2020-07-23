@@ -39,17 +39,16 @@ namespace Hiromi.Bot.Modules
                                  "or have permission to manage messages, you can delete and recreate it.");
             }
         }
-
-        [Confirm]
+        
         [Command("tag delete")]
         [Summary("Deletes a tag by Id")]
-        public async Task Delete(long id)
+        public async Task Delete(string name)
         {
-            var tag = await _tagService.GetTagSummary(Context.Guild.Id, x => x.Id == id);
+            var tag = await _tagService.GetTagSummary(Context.Guild.Id, name);
 
             if (tag is null)
             {
-                await ReplyAsync($"No tag by Id \"{id}\" found.");
+                await ReplyAsync($"No tag by name \"{name}\" found.");
                 return;
             }
 
@@ -59,20 +58,19 @@ namespace Hiromi.Bot.Modules
                 return;
             }
 
-            await _tagService.DeleteTagAsync(Context.Guild.Id, x => x.Id == id);
+            await _tagService.DeleteTagAsync(Context.Guild.Id, name);
             await ReplyAsync($"Deleted tag \"{tag.Name}\" ({tag.Id}).");
         }
-
-        [Confirm]
+        
         [Command("tag transfer")]
         [Summary("Transfers a tag")]
-        public async Task Transfer(IGuildUser user, long id)
+        public async Task Transfer(IGuildUser user, string name)
         {
-            var tag = await _tagService.GetTagSummary(Context.Guild.Id, x => x.Id == id);
+            var tag = await _tagService.GetTagSummary(Context.Guild.Id, name);
 
             if (tag is null)
             {
-                await ReplyAsync($"No tag by Id \"{id}\" found.");
+                await ReplyAsync($"No tag by name \"{name}\" found.");
                 return;
             }
 
@@ -82,12 +80,15 @@ namespace Hiromi.Bot.Modules
                 return;
             }
 
-            await _tagService.ModifyTagAsync(
-                Context.Guild.Id,
-                x => x.Id == id,
-                x => x.OwnerId = user.Id);
-
+            await _tagService.ModifyTagAsync(Context.Guild.Id, name, x => x.Name = name);
             await ReplyAsync($"Transferred tag \"{tag.Name}\" ({tag.Id}) to {user}.");
+        }
+
+        [Command("tag info")]
+        [Summary("Provides tag information")]
+        public async Task Info()
+        {
+            
         }
 
         [Command("tags")]

@@ -40,23 +40,29 @@ namespace Hiromi.Services.Tags
             {
                 var tags = await _hiromiContext
                     .Tags
-                    .FromSqlRaw("SELECT * FROM \"Tags\" WHERE SIMILARITY(\"Name\", {0}) > 0.1", name)
+                    .FromSqlRaw("SELECT * FROM \"Tags\" WHERE SIMILARITY(\"Name\", {0}) > 0.1 AND \"GuildId\" = {1}", name, (long) guildId)
                     .Select(TagSummary.FromEntityProjection)
                     .ToListAsync();
 
-                var builder = new StringBuilder()
-                    .AppendLine($"No tag called \"{name}\" found. Did you mean?")
-                    .AppendLine()
-                    .AppendLine("```");
-
-                foreach (var t in tags)
+                if (tags.Any())
                 {
-                    builder.AppendLine(t.Name);
+                    var builder = new StringBuilder()
+                        .AppendLine($"No tag called \"{name}\" found. Did you mean?")
+                        .AppendLine("```");
+
+                    foreach (var t in tags)
+                    {
+                        builder.AppendLine(t.Name);
+                    }
+
+                    builder.AppendLine("```");
+                    await channel.SendMessageAsync(builder.ToString());
+                }
+                else
+                {
+                    await channel.SendMessageAsync($"No tag called \"{name}\" found.");
                 }
 
-                builder.AppendLine("```");
-                
-                await channel.SendMessageAsync(builder.ToString());
                 return;
             }
             
@@ -91,12 +97,12 @@ namespace Hiromi.Services.Tags
             await _hiromiContext.SaveChangesAsync();
         }
 
-        public async Task ModifyTagAsync(ulong guildId, Expression<Func<TagEntity, bool>> criteria, Action<TagEntity> action)
+        public async Task ModifyTagAsync(ulong guildId, string name, Action<TagEntity> action)
         {
             var tag = await _hiromiContext
                 .Tags
                 .Where(x => x.GuildId == guildId)
-                .Where(criteria)
+                .Where(x => x.Name == name)
                 .FirstOrDefaultAsync();
 
             if (tag == null)
@@ -106,27 +112,24 @@ namespace Hiromi.Services.Tags
             await _hiromiContext.SaveChangesAsync();
         }
 
-        public async Task DeleteTagAsync(ulong guildId, Expression<Func<TagEntity, bool>> criteria)
+        public async Task DeleteTagAsync(ulong guildId, string name)
         {
             var tag = await _hiromiContext
                 .Tags
                 .Where(x => x.GuildId == guildId)
-                .Where(criteria)
+                .Where(x => x.Name == name)
                 .FirstOrDefaultAsync();
-
-            if (tag == null)
-                return;
-
-            _hiromiContext.Remove(tag);
+            
+            _hiromiContext.Remove(tag!);
             await _hiromiContext.SaveChangesAsync();
         }
 
-        public async Task<TagSummary> GetTagSummary(ulong guildId, Expression<Func<TagEntity, bool>> criteria)
+        public async Task<TagSummary> GetTagSummary(ulong guildId, string name)
         {
             return await _hiromiContext
                 .Tags
                 .Where(x => x.GuildId == guildId)
-                .Where(criteria)
+                .Where(x => x.Name == name)
                 .Select(TagSummary.FromEntityProjection)
                 .FirstOrDefaultAsync();
         }
