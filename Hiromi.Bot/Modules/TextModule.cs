@@ -12,7 +12,7 @@ namespace Hiromi.Bot.Modules
         [Summary("Echoes a message")]
         public async Task Echo([Remainder] string message)
         {
-            await ReplyAsync(message);
+            await ReplyAsync(message, allowedMentions: AllowedMentions.None);
             await Context.Message.DeleteAsync();
         }
         
