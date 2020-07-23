@@ -26,22 +26,13 @@ namespace Hiromi.Services.Help
                     .Select(x =>
                     {
                         var list = x.ToList();
-                        if (module.Name != "Log")
+                        return new EmbedPage
                         {
-                            return new EmbedPage
-                            {
-                                Title = $"{module.Name} Commands",
-                                TotalFieldMessage = list.Count != 1 ? "Commands" : "Command",
-                                Description = module.Summary,
-                                Fields = list.ToList(),
-                                Color = Constants.DefaultColour
-                            };
-                        }
-
-                        return new EmbedPage()
-                        {
-                            Title = "Hidden Module",
-                            Description = "Not publicly available"
+                            Title = $"{module.Name} Commands",
+                            TotalFieldMessage = list.Count != 1 ? "Commands" : "Command",
+                            Description = module.Summary,
+                            Fields = list.ToList(),
+                            Color = Constants.DefaultColour
                         };
                     }));
         }
