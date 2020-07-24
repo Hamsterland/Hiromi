@@ -24,7 +24,8 @@ namespace Hiromi.Services.Listeners.Voice
         
         public async Task Handle(UserVoiceStateUpdatedNotification notification, CancellationToken cancellationToken)
         {
-            var logChannel = await _hiromiContext.LogChannels
+            var logChannel = await _hiromiContext
+                .LogChannels
                 .Where(x => x.GuildId == (notification.User as IGuildUser).GuildId)
                 .FirstOrDefaultAsync(cancellationToken);
             

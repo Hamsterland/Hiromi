@@ -49,7 +49,8 @@ namespace Hiromi.Bot
                     AlwaysDownloadUsers = true,
                     MessageCacheSize = 10000,
                     GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMessages |
-                                     GatewayIntents.GuildMessageReactions | GatewayIntents.GuildVoiceStates | GatewayIntents.GuildPresences,
+                                     GatewayIntents.GuildMessageReactions | GatewayIntents.GuildVoiceStates | 
+                                     GatewayIntents.GuildPresences,
                     LogLevel = LogSeverity.Verbose
                 });
                 
@@ -67,7 +68,7 @@ namespace Hiromi.Bot
                     {
                         commandService.AddTypeReader<CommandInfo>(new CommandTypeReader());
                         commandService.AddTypeReader<ModuleInfo>(new ModuleTypeReader());
-                        commandService.AddTypeReader<TagSummary>(new TagSummaryTypeReader());
+                        commandService.AddTypeReader<TagEntity>(new TagSummaryTypeReader());
                         commandService.AddModulesAsync(Assembly.GetEntryAssembly(), provider);
                         return commandService;
                     })

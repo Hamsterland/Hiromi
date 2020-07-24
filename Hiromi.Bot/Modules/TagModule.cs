@@ -7,7 +7,6 @@ using Hiromi.Data.Models.Tags;
 using Hiromi.Services.Tags.Exceptions;
 using Hiromi.Services.Tags;
 
-
 namespace Hiromi.Bot.Modules
 {
     [Name("Tag")]
@@ -38,19 +37,19 @@ namespace Hiromi.Bot.Modules
         
         [Command("tag delete")]
         [Summary("Deletes a tag by Id")]
-        public async Task Delete(TagSummary tagSummary)
+        public async Task Delete(TagSummary tag)
         {
-            if (!tagSummary.CanMaintain(Context.User as IGuildUser))
+            if (!tag.CanMaintain(Context.User as IGuildUser))
             {
                 await ReplyAsync("You cannot delete this tag.");
                 return;
             }
 
-            await _tagService.DeleteTagAsync(tagSummary);
-            await ReplyAsync($"Deleted tag \"{tagSummary.Name}\" ({tagSummary.Id}).");
+            await _tagService.DeleteTagAsync(tag.GuildId, tag.Name);
+            await ReplyAsync($"Deleted tag \"{tag.Name}\" ({tag.Id}).");
         }
 
-        [Command("rename")]
+        [Command("tag rename")]
         [Summary("Renames a tag")]
         public async Task Rename(TagSummary tag, string name)
         {
@@ -60,31 +59,32 @@ namespace Hiromi.Bot.Modules
                 return;
             }
             
-            await _tagService.ModifyTagAsync(tag, x => x.Name = name);
+            await _tagService.ModifyTagAsync(tag.GuildId, tag.Name, x => x.Name = name);
             await ReplyAsync($"Renamed tag \"{tag.Name}\" to \"{name}\".");
         }
 
         [Command("tag transfer")]
         [Summary("Transfers ownership of a tag")]
-        public async Task Transfer(TagSummary tagSummary, IGuildUser user)
+        public async Task Transfer(TagSummary tag, IGuildUser user)
         {
-            if (!tagSummary.CanMaintain(Context.User as IGuildUser))
+            if (!tag.CanMaintain(Context.User as IGuildUser))
             {
-                await ReplyAsync($"{Context.User.Mention} you cannot transfer tag \"{tagSummary.Name}\"");
+                await ReplyAsync($"{Context.User.Mention} you cannot transfer tag \"{tag.Name}\"");
                 return;
             }
             
-            await _tagService.ModifyTagAsync(tagSummary, x => x.OwnerId = user.Id);
-            await ReplyAsync($"Transferred tag \"{tagSummary.Name}\" ({tagSummary.Id}) to {user}.");
+            await _tagService.ModifyTagAsync(tag.GuildId, tag.Name, x => x.OwnerId = user.Id);
+            await ReplyAsync($"Transferred tag \"{tag.Name}\" ({tag.Id}) to {user}.");
         }
 
         [Command("tag info")]
         [Summary("Provides tag information")]
-        public async Task Info(TagSummary tagSummary)
+        public async Task Info(TagSummary tag)
         {
-            var author = Context.Guild.GetUser(tagSummary.AuthorId);
-            var owner = Context.Guild.GetUser(tagSummary.OwnerId);
-            var embed = _tagService.FormatTagInfo(author, owner, tagSummary);
+            var author = Context.Guild.GetUser(tag.AuthorId);
+            var owner = Context.Guild.GetUser(tag.OwnerId);
+            
+            var embed = _tagService.FormatTagInfo(author, owner, tag);
             await ReplyAsync(embed: embed);
         }
 

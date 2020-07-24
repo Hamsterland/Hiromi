@@ -77,15 +77,26 @@ namespace Hiromi.Services.Tags
             await _hiromiContext.SaveChangesAsync();
         }
 
-        public async Task ModifyTagAsync(TagSummary tagSummary, Action<TagSummary> action)
+        public async Task ModifyTagAsync(ulong guildId, string name, Action<TagEntity> action)
         {
-            action(tagSummary);
+            var tag = await _hiromiContext
+                .Tags
+                .Where(x => x.GuildId == guildId)
+                .Where(x => x.Name == name)
+                .FirstOrDefaultAsync();
+            
+            action(tag);
             await _hiromiContext.SaveChangesAsync();
         }
 
-        public async Task DeleteTagAsync(TagSummary tagSummary)
+        public async Task DeleteTagAsync(ulong guildId, string name)
         {
-            _hiromiContext.Remove(tagSummary);
+            var tag = await _hiromiContext
+                .Tags
+                .Where(x => x.GuildId == guildId)
+                .Where(x => x.Name == name)
+                .FirstOrDefaultAsync();
+            
             await _hiromiContext.SaveChangesAsync();
         }
 

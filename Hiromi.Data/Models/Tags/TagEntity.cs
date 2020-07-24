@@ -33,6 +33,21 @@ namespace Hiromi.Data.Models.Tags
 
         [Required]
         public DateTime TimeCreated { get; set; } = DateTime.Now;
+
+        public TagSummary ToSummary()
+        {
+            return new TagSummary
+            {
+                Id = Id,
+                AuthorId = AuthorId,
+                OwnerId = OwnerId,
+                GuildId = GuildId,
+                Name = Name,
+                Content = Content,
+                Uses = Uses,
+                TimeCreated = TimeCreated
+            };
+        }
     }
     
     public class TagConfiguration : IEntityTypeConfiguration<TagEntity>

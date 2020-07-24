@@ -12,8 +12,8 @@ namespace Hiromi.Services.Tags
     {
         Task InvokeTagAsync(ulong guildId, ulong channelId, string name);
         Task CreateTagAsync(ulong guildId, ulong authorId, string name, string content);
-        Task ModifyTagAsync(TagSummary tagSummary, Action<TagSummary> action);
-        Task DeleteTagAsync(TagSummary tagSummary);
+        Task ModifyTagAsync(ulong guildId, string name, Action<TagEntity> action);
+        Task DeleteTagAsync(ulong guildId, string name);
         Task<TagSummary> GetTagSummaryAsync(ulong guildId, string name);
         Task<IEnumerable<TagSummary>> GetTagSummaries(ulong guildId, Expression<Func<TagEntity, bool>> criteria);
         Task<IEnumerable<TagSummary>> GetTagSummaryMatches(ulong guildId, string name);
