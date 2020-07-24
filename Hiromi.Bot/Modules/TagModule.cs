@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Hiromi.Data.Models.Tags;
-using Hiromi.Services;
-using Hiromi.Services.Exceptions;
+using Hiromi.Services.Tags.Exceptions;
 using Hiromi.Services.Tags;
-using MoreLinq;
+
 
 namespace Hiromi.Bot.Modules
 {
@@ -52,7 +49,21 @@ namespace Hiromi.Bot.Modules
             await _tagService.DeleteTagAsync(tagSummary);
             await ReplyAsync($"Deleted tag \"{tagSummary.Name}\" ({tagSummary.Id}).");
         }
-        
+
+        [Command("rename")]
+        [Summary("Renames a tag")]
+        public async Task Rename(TagSummary tag, string name)
+        {
+            if (!tag.CanMaintain(Context.User as IGuildUser))
+            {
+                await ReplyAsync($"{Context.User.Mention} you cannot rename tag \"{tag.Name}\"");
+                return;
+            }
+            
+            await _tagService.ModifyTagAsync(tag, x => x.Name = name);
+            await ReplyAsync($"Renamed tag \"{tag.Name}\" to \"{name}\".");
+        }
+
         [Command("tag transfer")]
         [Summary("Transfers ownership of a tag")]
         public async Task Transfer(TagSummary tagSummary, IGuildUser user)
@@ -71,18 +82,9 @@ namespace Hiromi.Bot.Modules
         [Summary("Provides tag information")]
         public async Task Info(TagSummary tagSummary)
         {
-            var owner = Context.Guild.GetUser(tagSummary.OwnerId);
             var author = Context.Guild.GetUser(tagSummary.AuthorId);
-
-            var embed = new EmbedBuilder()
-                .WithColor(Constants.DefaultColour)
-                .AddField("Name", tagSummary.Name)
-                .AddField("Id", tagSummary.Id)
-                .AddField("Uses", tagSummary.Uses)
-                .AddField("Owner", owner)
-                .AddField("Author", author)
-                .Build();
-
+            var owner = Context.Guild.GetUser(tagSummary.OwnerId);
+            var embed = _tagService.FormatTagInfo(author, owner, tagSummary);
             await ReplyAsync(embed: embed);
         }
 
@@ -91,40 +93,17 @@ namespace Hiromi.Bot.Modules
         public async Task Tags(IGuildUser user = null)
         {
             user ??= Context.User as IGuildUser;
+            
             var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == user.Id);
             var tagsList = tags.ToList();
-
+            
             if (!tagsList.Any())
             {
                 await ReplyAsync($"{user} does not have any tags.");
                 return;
             }
 
-            var fields = tagsList
-                .Select(tagSummary => new EmbedFieldBuilder()
-                    .WithName(tagSummary.Id.ToString())
-                    .WithValue(tagSummary.Name)
-                    .WithIsInline(true));
-
-            var pages = new List<EmbedPage>(fields
-                .Batch(10)
-                .Select(x => new EmbedPage
-                {
-                    Author = new EmbedAuthorBuilder()
-                        .WithName($"{user}'s Tags")
-                        .WithIconUrl(user.GetAvatarUrl()),
-
-                    TotalFieldMessage = "Tags",
-                    Fields = x.ToList(),
-                    Color = Constants.DefaultColour
-                }));
-
-            var pager = new PaginatedMessage
-            {
-                Pages = pages,
-                Options = new PaginatedAppearanceOptions { Timeout = TimeSpan.FromMinutes(1) }
-            };
-
+            var pager = _tagService.FormatUserTags(user, tagsList);
             await PagedReplyAsync(pager, default);
         }
     }

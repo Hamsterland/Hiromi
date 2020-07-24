@@ -32,7 +32,7 @@ namespace Hiromi.Services.Help
                             TotalFieldMessage = list.Count != 1 ? "Commands" : "Command",
                             Description = module.Summary,
                             Fields = list.ToList(),
-                            Color = Constants.DefaultColour
+                            Color = Constants.DefaultEmbedColour
                         };
                     }));
         }

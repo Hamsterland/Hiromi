@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hiromi.Services.Exceptions
+namespace Hiromi.Services.Tags.Exceptions
 {
     public class TagAlreadyExistsException : Exception
     {

@@ -61,7 +61,7 @@ namespace Hiromi.Bot.Modules
             }
             
             var embed = new EmbedBuilder()
-                .WithColor(Constants.DefaultColour)
+                .WithColor(Constants.DefaultEmbedColour)
                 .WithAuthor(author =>
                     author
                         .WithName($"{Context.Guild} Log Channel")

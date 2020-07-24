@@ -74,7 +74,7 @@ namespace Hiromi.Modules
         public async Task Help([Remainder] CommandInfo command)
         {
             var embed = new EmbedBuilder()
-                .WithColor(Constants.DefaultColour)
+                .WithColor(Constants.DefaultEmbedColour)
                 .WithTitle(command.Name)
                 .AddField("Usage", _helpService.GetCommandUsage(command))
                 .AddField("Summary", command.Summary);

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace Hiromi.Services.Hosted
+namespace Hiromi.Services.Core
 {
     public class StartupService : IHostedService
     {

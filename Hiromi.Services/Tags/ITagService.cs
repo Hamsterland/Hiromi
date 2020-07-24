@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Addons.Interactive;
 using Hiromi.Data.Models.Tags;
 
 namespace Hiromi.Services.Tags
@@ -13,8 +14,11 @@ namespace Hiromi.Services.Tags
         Task CreateTagAsync(ulong guildId, ulong authorId, string name, string content);
         Task ModifyTagAsync(TagSummary tagSummary, Action<TagSummary> action);
         Task DeleteTagAsync(TagSummary tagSummary);
-        Task<TagSummary> GetTagSummary(ulong guildId, string name);
+        Task<TagSummary> GetTagSummaryAsync(ulong guildId, string name);
         Task<IEnumerable<TagSummary>> GetTagSummaries(ulong guildId, Expression<Func<TagEntity, bool>> criteria);
-        bool CanMaintain(IGuildUser user, TagSummary tagSummary);
+        Task<IEnumerable<TagSummary>> GetTagSummaryMatches(ulong guildId, string name);
+        Embed FormatMatchedTags(string name, IEnumerable<TagSummary> matches);
+        Embed FormatTagInfo(IUser author, IUser owner, TagSummary tag);
+        PaginatedMessage FormatUserTags(IUser user, IEnumerable<TagSummary> tags);
     }
 }

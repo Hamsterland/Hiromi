@@ -33,7 +33,7 @@ namespace Hiromi.Services.Listeners.Voice
             if (notification.VoiceState1.VoiceChannel is null && notification.VoiceState2.VoiceChannel != null)
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(Constants.DefaultColour)
+                    .WithColor(Constants.DefaultEmbedColour)
                     .WithTitle("User Joined Voice Channel")
                     .AddField("User", notification.User.Mention)
                     .AddField("Channel", notification.VoiceState2.VoiceChannel.Name)
@@ -47,7 +47,7 @@ namespace Hiromi.Services.Listeners.Voice
             if (notification.VoiceState1.VoiceChannel != null && notification.VoiceState2.VoiceChannel is null)
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(Constants.DefaultColour)
+                    .WithColor(Constants.DefaultEmbedColour)
                     .WithTitle("User Left Voice Channel")
                     .AddField("User", notification.User.Mention)
                     .AddField("Channel", notification.VoiceState1.VoiceChannel.Name)
@@ -63,7 +63,7 @@ namespace Hiromi.Services.Listeners.Voice
                 && notification.VoiceState1.VoiceChannel != notification.VoiceState2.VoiceChannel)
             {
                 var embed = new EmbedBuilder()
-                    .WithColor(Constants.DefaultColour)
+                    .WithColor(Constants.DefaultEmbedColour)
                     .WithTitle("User Changed Voice Channel")
                     .AddField("User", notification.User.Mention)
                     .AddField("Old Channel", notification.VoiceState1.VoiceChannel.Name)

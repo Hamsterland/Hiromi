@@ -10,7 +10,7 @@ using Hiromi.Data;
 using Hiromi.Data.Models.Tags;
 using Hiromi.Services;
 using Hiromi.Services.Help;
-using Hiromi.Services.Hosted;
+using Hiromi.Services.Core;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Logging;
 using Hiromi.Services.MyAnimeList;
