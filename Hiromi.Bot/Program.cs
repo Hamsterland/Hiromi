@@ -68,7 +68,7 @@ namespace Hiromi.Bot
                     {
                         commandService.AddTypeReader<CommandInfo>(new CommandTypeReader());
                         commandService.AddTypeReader<ModuleInfo>(new ModuleTypeReader());
-                        commandService.AddTypeReader<TagEntity>(new TagSummaryTypeReader());
+                        commandService.AddTypeReader<TagSummary>(new TagSummaryTypeReader());
                         commandService.AddModulesAsync(Assembly.GetEntryAssembly(), provider);
                         return commandService;
                     })
