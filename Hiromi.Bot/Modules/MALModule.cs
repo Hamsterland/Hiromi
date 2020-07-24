@@ -20,7 +20,7 @@ namespace Hiromi.Bot.Modules
         [Summary("iS MaL DoWn?")]
         public async Task Status()
         {
-            var status = _malStatusService.MalStatus;
+            var status = _malStatusService.IsUp;
 
             var embed = new EmbedBuilder()
                 .WithColor(new Color(46, 81, 162))

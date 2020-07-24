@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Hiromi.Services.MyAnimeList
 {
     public class MALStatusService
     {
-        public bool MalStatus;
+        public bool IsUp;
         private const string Url = "https://myanimelist.net/";
-
-        public MALStatusService()
-        {
-            StartAsync();
-        }
         
-        public void StartAsync()
+        public void Start()
         {
             var timer = new Timer(e =>
             {
@@ -29,13 +23,13 @@ namespace Hiromi.Services.MyAnimeList
                     {
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
-                            MalStatus = true;
+                            IsUp = true;
                         }
                     }
                 }
                 catch (WebException)
                 {
-                    MalStatus = false;
+                    IsUp = false;
                 }
             }, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
         }
