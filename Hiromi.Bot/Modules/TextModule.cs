@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Hiromi.Bot.Preconditions;
 
 namespace Hiromi.Bot.Modules
 {
@@ -16,6 +17,7 @@ namespace Hiromi.Bot.Modules
             await Context.Message.DeleteAsync();
         }
         
+        [RequireDeveloper]
         [Command("status")]
         [Summary("Sets Hiromi's status")]
         public async Task Status(ActivityType type, [Remainder] string status)

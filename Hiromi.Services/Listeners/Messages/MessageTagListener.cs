@@ -34,7 +34,9 @@ namespace Hiromi.Services.Listeners.Messages
             if (channel.Id == 636631013715476493 
                 || channel.Id == 636631078693765144
                 || channel.Id == 636630976373587994
-                || channel.Id == 636684229652119579)
+                || channel.Id == 636684229652119579
+                || channel.Id == 381890266052689920
+                || channel.Id == 700496613537480864)
             {
                 return;
             }
