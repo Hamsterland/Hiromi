@@ -96,7 +96,8 @@ namespace Hiromi.Services.Tags
                 .Where(x => x.GuildId == guildId)
                 .Where(x => x.Name == name)
                 .FirstOrDefaultAsync();
-            
+
+            _hiromiContext.Remove(tag);
             await _hiromiContext.SaveChangesAsync();
         }
 
