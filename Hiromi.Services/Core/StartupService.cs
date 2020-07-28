@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Hiromi.Services.Commands;
 using Hiromi.Services.MyAnimeList;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -16,17 +17,20 @@ namespace Hiromi.Services.Core
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly MALStatusService _malStatusService;
+        private readonly ICommandStoreService _commandStoreService;
 
         public StartupService(
             DiscordSocketClient discordSocketClient, 
             IConfiguration configuration,
             ILogger logger, 
-            MALStatusService malStatusService)
+            MALStatusService malStatusService, 
+            ICommandStoreService commandStoreService)
         {
             _discordSocketClient = discordSocketClient;
             _configuration = configuration;
             _logger = logger;
             _malStatusService = malStatusService;
+            _commandStoreService = commandStoreService;
         }
         
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -41,6 +45,7 @@ namespace Hiromi.Services.Core
             
             try
             {
+                await _commandStoreService.LoadEnabledCommands();
                 await _discordSocketClient.LoginAsync(TokenType.Bot, token);
                 await _discordSocketClient.StartAsync();
             }

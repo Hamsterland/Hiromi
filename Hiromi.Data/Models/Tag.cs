@@ -1,13 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata;
-using Discord;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Hiromi.Data.Models.Tags
 {
-    public class TagEntity
+    public class Tag
     {
         [Key]
         [Required]
@@ -50,9 +48,9 @@ namespace Hiromi.Data.Models.Tags
         }
     }
     
-    public class TagConfiguration : IEntityTypeConfiguration<TagEntity>
+    public class TagConfiguration : IEntityTypeConfiguration<Tag>
     {
-        public void Configure(EntityTypeBuilder<TagEntity> builder)
+        public void Configure(EntityTypeBuilder<Tag> builder)
         {
             builder
                 .HasAlternateKey(x => new {x.GuildId, x.Name});

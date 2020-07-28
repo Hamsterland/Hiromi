@@ -1,14 +1,17 @@
 ﻿using Hiromi.Data.Models.Logging;
 using Hiromi.Data.Models.Tags;
 using Microsoft.EntityFrameworkCore;
+using Channel = Hiromi.Data.Models.Channels.Channel;
 
 namespace Hiromi.Data
 {
     public class HiromiContext : DbContext
     {
-        public DbSet<TagEntity> Tags { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
         public DbSet<LogChannel> LogChannels { get; set; }
+
+        public DbSet<Channel> Channels { get; set; }
         
         public HiromiContext(DbContextOptions options) : base(options)
         { }

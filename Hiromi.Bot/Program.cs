@@ -8,7 +8,7 @@ using Discord.WebSocket;
 using Hiromi.Bot.TypeReaders;
 using Hiromi.Data;
 using Hiromi.Data.Models.Tags;
-using Hiromi.Services;
+using Hiromi.Services.Commands;
 using Hiromi.Services.Help;
 using Hiromi.Services.Core;
 using Hiromi.Services.Listeners;
@@ -75,9 +75,10 @@ namespace Hiromi.Bot
                     .AddDbContext<HiromiContext>(options => options.UseNpgsql(configuration["Postgres:Connection"]))
                     .AddHostedService<StartupService>()
                     .AddHostedService<DiscordSocketListener>()
-                    .AddHostedService<PostCommandService>()
                     .AddSingleton<MALStatusService>()
                     .AddSingleton<InteractiveService>()
+                    .AddSingleton<ICommandStoreService, CommandStoreService>()
+                    .AddScoped<ICommandToggleService, CommandToggleService>()
                     .AddScoped<ITagService, TagService>()
                     .AddScoped<ILogChannelService, LogChannelService>()
                     .AddScoped<IHelpService, HelpService>();

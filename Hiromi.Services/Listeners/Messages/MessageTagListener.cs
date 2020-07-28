@@ -17,8 +17,8 @@ namespace Hiromi.Services.Listeners.Messages
         {
             _tagService = tagService;
         }
-
-        private readonly Regex _inlineTagRegex = new Regex(@"\$(\S+)\b",
+    
+        private readonly Regex _inlineTagRegex = new Regex(@"\$(\S)",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         public async Task Handle(MessageReceivedNotification notification, CancellationToken cancellationToken)

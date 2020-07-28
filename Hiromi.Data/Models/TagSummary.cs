@@ -20,7 +20,7 @@ namespace Hiromi.Data.Models.Tags
             return OwnerId == user.Id || user.GuildPermissions.ManageMessages;
         }
         
-        public static readonly Expression<Func<TagEntity, TagSummary>> FromEntityProjection = tagEntity => new TagSummary
+        public static readonly Expression<Func<Tag, TagSummary>> FromEntityProjection = tagEntity => new TagSummary
         {
             Id = tagEntity.Id,
             AuthorId = tagEntity.AuthorId,

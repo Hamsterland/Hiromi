@@ -7,6 +7,8 @@ namespace Hiromi.Bot.Modules
 {
     [Name("Text")]
     [Summary("Misc text-based commands")]
+    [RequireEnabledChannel]
+    [RequireDeveloperOrManageChannels]
     public class TextModule : ModuleBase<SocketCommandContext>
     {
         [Command("echo")]

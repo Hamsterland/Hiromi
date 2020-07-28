@@ -65,7 +65,7 @@ namespace Hiromi.Services.Tags
                 throw new TagAlreadyExistsException(default);
             }
 
-            _hiromiContext.Add(new TagEntity
+            _hiromiContext.Add(new Tag
             {
                 GuildId = guildId,
                 AuthorId = authorId,
@@ -77,7 +77,7 @@ namespace Hiromi.Services.Tags
             await _hiromiContext.SaveChangesAsync();
         }
 
-        public async Task ModifyTagAsync(ulong guildId, string name, Action<TagEntity> action)
+        public async Task ModifyTagAsync(ulong guildId, string name, Action<Tag> action)
         {
             var tag = await _hiromiContext
                 .Tags
@@ -111,7 +111,7 @@ namespace Hiromi.Services.Tags
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<TagSummary>> GetTagSummaries(ulong guildId, Expression<Func<TagEntity, bool>> criteria)
+        public async Task<IEnumerable<TagSummary>> GetTagSummaries(ulong guildId, Expression<Func<Tag, bool>> criteria)
         {
             return await _hiromiContext
                 .Tags
