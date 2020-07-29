@@ -9,7 +9,7 @@ namespace Hiromi.Services.Commands
         void CacheCommands(ulong channelId, List<string> commands);
         void UnCacheCommands(ulong channelId, IEnumerable<string> commands);
         List<string> GetEnabledCommands(ulong channelId);
-        Task StoreCommandsInDbAsync(ulong channelId, IEnumerable<string> commands);
-        Task RemoveCommandsFromDbAsync(ulong channelId, IEnumerable<string> commands);
+        Task StoreCommandsInDbAsync(ulong guildId, ulong channelId, IEnumerable<string> commands);
+        Task RemoveCommandsFromDbAsync(ulong guildId, ulong channelId, IEnumerable<string> commands);
     }
 }

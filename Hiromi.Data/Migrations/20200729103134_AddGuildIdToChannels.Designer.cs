@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using Hiromi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hiromi.Data.Migrations
 {
     [DbContext(typeof(HiromiContext))]
-    partial class HiromiContextModelSnapshot : ModelSnapshot
+    [Migration("20200729103134_AddGuildIdToChannels")]
+    partial class AddGuildIdToChannels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,6 +48,30 @@ namespace Hiromi.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Channels");
+                });
+
+            modelBuilder.Entity("Hiromi.Data.Models.Logging.LogChannel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<long>("ChannelId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("GuildId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChannelId")
+                        .IsUnique();
+
+                    b.HasIndex("GuildId")
+                        .IsUnique();
+
+                    b.ToTable("LogChannels");
                 });
 
             modelBuilder.Entity("Hiromi.Data.Models.Tags.Tag", b =>

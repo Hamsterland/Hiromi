@@ -48,7 +48,7 @@ namespace Hiromi.Bot.Modules
             }
 
             await _tagService.DeleteTagAsync(tag.GuildId, tag.Name);
-            await ReplyAsync($"Deleted tag \"{tag.Name}\" ({tag.Id}).");
+            await ReplyAsync($"Deleted tag \"{tag.Name}\".");
         }
 
         [Command("tag rename")]
@@ -76,7 +76,7 @@ namespace Hiromi.Bot.Modules
             }
             
             await _tagService.ModifyTagAsync(tag.GuildId, tag.Name, x => x.OwnerId = user.Id);
-            await ReplyAsync($"Transferred tag \"{tag.Name}\" ({tag.Id}) to {user}.");
+            await ReplyAsync($"Transferred tag \"{tag.Name}\" to {user}.");
         }
 
         [Command("tag info")]

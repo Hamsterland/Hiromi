@@ -1,9 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Hiromi.Data;
-using Hiromi.Data.Models.Logging;
+using Hiromi.Data.Models;
+using Hiromi.Data.Models.Channels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hiromi.Services.Logging
@@ -19,22 +19,29 @@ namespace Hiromi.Services.Logging
 
         public async Task SetLogChannelAsync(ulong guildId, ulong channelId)
         {
-            var logChannel = await _hiromiContext
-                .LogChannels
+            var channel = await _hiromiContext
+                .Channels
                 .Where(x => x.GuildId == guildId)
+                .Where(x => x.ChannelId == channelId)
                 .FirstOrDefaultAsync();
             
-            if (logChannel is null)
+            if (channel is null)
             {
-                _hiromiContext.Add(new LogChannel
+                _hiromiContext.Add(new Channel
                 {
                     GuildId = guildId,
-                    ChannelId = channelId
+                    ChannelId = channelId,
+                    Commands = new List<string>(),
+                    IsLogChannel = true
                 });
+            }
+            else if (channel.IsLogChannel)
+            {
+                return;
             }
             else
             {
-                logChannel.ChannelId = channelId;
+                channel.IsLogChannel = true;
             }
             
             await _hiromiContext.SaveChangesAsync();
@@ -42,25 +49,27 @@ namespace Hiromi.Services.Logging
 
         public async Task RemoveLogChannelAsync(ulong guildId)
         {
-            var logChannel = _hiromiContext
-                .LogChannels
+            var channel = await _hiromiContext
+                .Channels
                 .Where(x => x.GuildId == guildId)
                 .FirstOrDefaultAsync();
 
-            if (logChannel != null)
+            if (channel is null)
             {
-                _hiromiContext.Remove(logChannel);
+                return;
             }
 
+            channel.IsLogChannel = false;
             await _hiromiContext.SaveChangesAsync();
         }
 
-        public async Task<LogChannelSummary> GetLogChannelSummary(ulong guildId)
+        public async Task<ChannelSummary> GetLogChannelSummary(ulong guildId)
         {
             return await _hiromiContext
-                .LogChannels
+                .Channels
                 .Where(x => x.GuildId == guildId)
-                .Select(LogChannelSummary.FromEntityProjection)
+                .Where(x => x.IsLogChannel)
+                .Select(ChannelSummary.FromEntityProjection)
                 .FirstOrDefaultAsync();
         }
     }

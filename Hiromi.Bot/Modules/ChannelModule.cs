@@ -25,17 +25,17 @@ namespace Hiromi.Bot.Modules
         {
             channel ??= Context.Channel as IGuildChannel;
 
-            await _commandToggleService.EnableCommandAsync(channel.Id, command);
+            await _commandToggleService.EnableCommandAsync(Context.Guild.Id, channel.Id, command);
             await ReplyAsync($"Enabled command \"{command.Name}\" in <#{channel.Id}> (if it wasn't already enabled).");
         }
 
         [Command("enable module")]
         [Summary("Enables a module in a channel")]
-        public async Task EnableModule(ModuleInfo module, IGuildChannel channel)
+        public async Task EnableModule(ModuleInfo module, IGuildChannel channel = null)
         {
-            // channel ??= Context.Channel as IGuildChannel;
+            channel ??= Context.Channel as IGuildChannel;
 
-            await _commandToggleService.EnableModuleAsync(channel.Id, module);
+            await _commandToggleService.EnableModuleAsync(Context.Guild.Id, channel.Id, module);
             await ReplyAsync($"Enabled module \"{module.Name}\" in <#{channel.Id}> (if it wasn't already enabled).");
         }
 
@@ -45,7 +45,7 @@ namespace Hiromi.Bot.Modules
         {
             channel ??= Context.Channel as IGuildChannel;
 
-            await _commandToggleService.DisableCommandAsync(channel.Id, command);
+            await _commandToggleService.DisableCommandAsync(Context.Guild.Id, channel.Id, command);
             await ReplyAsync($"Disabled command \"{command.Name}\" in <#{channel.Id}> (if it wasn't already disabled).");
         }
 
@@ -55,7 +55,7 @@ namespace Hiromi.Bot.Modules
         {
             channel ??= Context.Channel as IGuildChannel;
 
-            await _commandToggleService.DisableModuleAsync(channel.Id, module);
+            await _commandToggleService.DisableModuleAsync(Context.Guild.Id, channel.Id, module);
             await ReplyAsync($"Disabled module \"{module.Name}\" in <#{channel.Id}> (if it wasn't already disabled).");
         }
     }

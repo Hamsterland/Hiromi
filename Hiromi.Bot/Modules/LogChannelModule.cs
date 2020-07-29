@@ -4,10 +4,9 @@ using Discord.Commands;
 using Hiromi.Services;
 using Hiromi.Services.Logging;
 
-
 namespace Hiromi.Bot.Modules
 {
-    [Name("Log")]
+    [Name("Logging")]
     [Summary("Where will I log?")]
     [RequireUserPermission(GuildPermission.ManageChannels)]
     public class LogModule : ModuleBase<SocketCommandContext>

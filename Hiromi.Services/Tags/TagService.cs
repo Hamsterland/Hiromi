@@ -162,7 +162,6 @@ namespace Hiromi.Services.Tags
             return new EmbedBuilder()
                 .WithColor(Constants.DefaultEmbedColour)
                 .AddField("Name", tag.Name)
-                .AddField("Id", tag.Id)
                 .AddField("Uses", tag.Uses)
                 .AddField("Owner", owner)
                 .AddField("Author", author)
@@ -173,7 +172,6 @@ namespace Hiromi.Services.Tags
         {
             var fields = tags
                 .Select(tagSummary => new EmbedFieldBuilder()
-                    .WithName(tagSummary.Id.ToString())
                     .WithValue(tagSummary.Name)
                     .WithIsInline(true));
 

@@ -1,9 +1,12 @@
-﻿using System.Collections.Concurrent;
+﻿
+
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hiromi.Data;
 using Hiromi.Data.Models.Channels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hiromi.Services.Commands
 {
@@ -59,42 +62,50 @@ namespace Hiromi.Services.Commands
             return !_enabledCommands.ContainsKey(channelId) ? null : _enabledCommands[channelId];
         }
 
-        public async Task StoreCommandsInDbAsync(ulong channelId, IEnumerable<string> commands)
+        public async Task StoreCommandsInDbAsync(ulong guildId, ulong channelId, IEnumerable<string> commands)
         {
-            var currentChannel = await _hiromiContext
+            var channel = await _hiromiContext
                 .Channels
-                .FirstOrDefaultAsync(x => x.ChannelId == channelId);
+                .Where(x => x.GuildId == guildId)
+                .Where(x => x.ChannelId == channelId)
+                .FirstOrDefaultAsync();
 
-            if (currentChannel is null)
+            if (channel is null)
             {
-                var newChannel = new Channel
+                _hiromiContext.Add(new Channel
                 {
+                    GuildId = guildId,
                     ChannelId = channelId,
-                    Commands = new List<string>(),
                     IsLogChannel = false
-                };
-                
-                _hiromiContext.Add(newChannel);
+                });
             }
+            
+            var current = await _hiromiContext
+                .Channels
+                .Where(x => x.GuildId == guildId)
+                .Where(x => x.ChannelId == channelId)
+                .FirstOrDefaultAsync();
             
             foreach (var command in commands)
             {
-                if (currentChannel.Commands.Contains(command))
+                if (current.Commands.Contains(command))
                 {
                     continue;
                 }
                 
-                currentChannel.Commands.Add(command);
+                current.Commands.Add(command);
             }
             
             await _hiromiContext.SaveChangesAsync();
         }
 
-        public async Task RemoveCommandsFromDbAsync(ulong channelId, IEnumerable<string> commands)
+        public async Task RemoveCommandsFromDbAsync(ulong guildId, ulong channelId, IEnumerable<string> commands)
         {
             var channel = await _hiromiContext
                 .Channels
-                .FirstOrDefaultAsync(x => x.ChannelId == channelId);
+                .Where(x => x.GuildId == guildId)
+                .Where(x => x.ChannelId == channelId)
+                .FirstOrDefaultAsync();
 
             if (channel is null)
             {

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Hiromi.Data.Models.Logging;
+using Hiromi.Data.Models;
 
 namespace Hiromi.Services.Logging
 {
@@ -7,6 +7,6 @@ namespace Hiromi.Services.Logging
     {
         Task SetLogChannelAsync(ulong guildId, ulong channelId);
         Task RemoveLogChannelAsync(ulong guildId);
-        Task<LogChannelSummary> GetLogChannelSummary(ulong guildId);
+        Task<ChannelSummary> GetLogChannelSummary(ulong guildId);
     }
 }

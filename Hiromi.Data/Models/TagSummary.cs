@@ -6,7 +6,6 @@ namespace Hiromi.Data.Models.Tags
 {
     public class TagSummary
     {
-        public long Id { get; set; }
         public ulong AuthorId { get; set; }
         public ulong OwnerId { get; set; }
         public ulong GuildId { get; set; }
@@ -22,7 +21,6 @@ namespace Hiromi.Data.Models.Tags
         
         public static readonly Expression<Func<Tag, TagSummary>> FromEntityProjection = tagEntity => new TagSummary
         {
-            Id = tagEntity.Id,
             AuthorId = tagEntity.AuthorId,
             OwnerId = tagEntity.OwnerId,
             GuildId = tagEntity.GuildId,

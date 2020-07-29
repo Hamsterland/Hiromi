@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using Hiromi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hiromi.Data.Migrations
 {
     [DbContext(typeof(HiromiContext))]
-    partial class HiromiContextModelSnapshot : ModelSnapshot
+    [Migration("20200729105259_RemoveLogChannels")]
+    partial class RemoveLogChannels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

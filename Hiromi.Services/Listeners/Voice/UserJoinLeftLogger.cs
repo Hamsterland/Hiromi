@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Reflection.Metadata;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -15,64 +17,68 @@ namespace Hiromi.Services.Listeners.Voice
         private readonly DiscordSocketClient _discordSocketClient;
 
         public UserJoinLeftLogger(
-            HiromiContext hiromiContext, 
+            HiromiContext hiromiContext,
             DiscordSocketClient discordSocketClient)
         {
             _hiromiContext = hiromiContext;
             _discordSocketClient = discordSocketClient;
         }
-        
+
         public async Task Handle(UserVoiceStateUpdatedNotification notification, CancellationToken cancellationToken)
         {
             var logChannel = await _hiromiContext
-                .LogChannels
+                .Channels
                 .Where(x => x.GuildId == (notification.User as IGuildUser).GuildId)
+                .Where(x => x.IsLogChannel)
                 .FirstOrDefaultAsync(cancellationToken);
-            
-            var channel = _discordSocketClient.GetChannel(logChannel.ChannelId);
-            
-            if (notification.VoiceState1.VoiceChannel is null && notification.VoiceState2.VoiceChannel != null)
+
+            if (logChannel is null)
             {
-                var embed = new EmbedBuilder()
-                    .WithColor(Constants.DefaultEmbedColour)
-                    .WithTitle("User Joined Voice Channel")
-                    .AddField("User", notification.User.Mention)
-                    .AddField("Channel", notification.VoiceState2.VoiceChannel.Name)
-                    .WithCurrentTimestamp()
-                    .Build();
-                
-                await (channel as ITextChannel).SendMessageAsync(embed: embed);
                 return;
             }
             
+            var channel = _discordSocketClient.GetChannel(logChannel.ChannelId) as ITextChannel;
+
+            var builder = new EmbedBuilder()
+                .WithColor(Constants.DefaultEmbedColour)
+                .WithCurrentTimestamp();
+
+            if (notification.VoiceState1.VoiceChannel is null && notification.VoiceState2.VoiceChannel != null)
+            {
+                var embed = builder
+                    .WithTitle("User Joined Voice Channel")
+                    .AddField("User", notification.User.Mention)
+                    .AddField("Channel", notification.VoiceState2.VoiceChannel.Name)
+                    .Build();
+
+                await channel.SendMessageAsync(embed: embed);
+                return;
+            }
+
             if (notification.VoiceState1.VoiceChannel != null && notification.VoiceState2.VoiceChannel is null)
             {
-                var embed = new EmbedBuilder()
-                    .WithColor(Constants.DefaultEmbedColour)
+                var embed = builder
                     .WithTitle("User Left Voice Channel")
                     .AddField("User", notification.User.Mention)
                     .AddField("Channel", notification.VoiceState1.VoiceChannel.Name)
-                    .WithCurrentTimestamp()
                     .Build();
-             
-                await (channel as ITextChannel).SendMessageAsync(embed: embed);
-                return; 
+
+                await channel.SendMessageAsync(embed: embed);
+                return;
             }
 
             if (notification.VoiceState1.VoiceChannel != null
                 && notification.VoiceState2.VoiceChannel != null
                 && notification.VoiceState1.VoiceChannel != notification.VoiceState2.VoiceChannel)
             {
-                var embed = new EmbedBuilder()
-                    .WithColor(Constants.DefaultEmbedColour)
+                var embed = builder
                     .WithTitle("User Changed Voice Channel")
                     .AddField("User", notification.User.Mention)
                     .AddField("Old Channel", notification.VoiceState1.VoiceChannel.Name)
                     .AddField("New Channel", notification.VoiceState2.VoiceChannel.Name)
-                    .WithCurrentTimestamp()
                     .Build();
-             
-                await (channel as ITextChannel).SendMessageAsync(embed: embed);
+
+                await channel.SendMessageAsync(embed: embed);
             }
         }
     }

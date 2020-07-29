@@ -11,10 +11,14 @@ namespace Hiromi.Data.Models.Channels
         public long Id { get; set; }
 
         [Required]
+        public ulong GuildId { get; set; }
+        
+        [Required]
         public ulong ChannelId { get; set; }
         
-        public List<string> Commands { get; set; }
-        
+        [Required]
+        public List<string> Commands { get; set; } = new List<string>();
+
         [Required] 
         public bool IsLogChannel { get; set; }
     }

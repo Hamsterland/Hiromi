@@ -15,13 +15,13 @@ namespace Hiromi.Services.Commands
             _commandStoreService = commandStoreService;
         }
 
-        public async Task EnableCommandAsync(ulong channelId, CommandInfo command)
+        public async Task EnableCommandAsync(ulong guildId, ulong channelId, CommandInfo command)
         {
             _commandStoreService.CacheCommands(channelId, new List<string> {command.Name});
-            await _commandStoreService.StoreCommandsInDbAsync(channelId, new List<string> {command.Name});
+            await _commandStoreService.StoreCommandsInDbAsync(guildId, channelId, new List<string> {command.Name});
         }
 
-        public async Task DisableCommandAsync(ulong channelId, CommandInfo command)
+        public async Task DisableCommandAsync(ulong guildId, ulong channelId, CommandInfo command)
         {
             var commands = _commandStoreService.GetEnabledCommands(channelId);
 
@@ -29,11 +29,11 @@ namespace Hiromi.Services.Commands
             {
                 commands.Remove(command.Name);
                 _commandStoreService.CacheCommands(channelId, commands);
-                await _commandStoreService.StoreCommandsInDbAsync(channelId, commands);
+                await _commandStoreService.StoreCommandsInDbAsync(guildId, channelId, commands);
             }
         }
 
-        public async Task EnableModuleAsync(ulong channelId, ModuleInfo module)
+        public async Task EnableModuleAsync(ulong guildId, ulong channelId, ModuleInfo module)
         {
             var commands = module
                 .Commands
@@ -41,10 +41,10 @@ namespace Hiromi.Services.Commands
                 .ToList();
             
             _commandStoreService.CacheCommands(channelId, commands);
-            await _commandStoreService.StoreCommandsInDbAsync(channelId, commands);
+            await _commandStoreService.StoreCommandsInDbAsync(guildId, channelId, commands);
         }
         
-        public async Task DisableModuleAsync(ulong channelId, ModuleInfo module)
+        public async Task DisableModuleAsync(ulong guildId, ulong channelId, ModuleInfo module)
         {
             var commands = module
                 .Commands
@@ -54,7 +54,7 @@ namespace Hiromi.Services.Commands
             if (module.Commands.Count > 0)
             {
                 _commandStoreService.UnCacheCommands(channelId, commands);
-                await _commandStoreService.RemoveCommandsFromDbAsync(channelId, commands);
+                await _commandStoreService.RemoveCommandsFromDbAsync(guildId, channelId, commands);
             }
         }
     }
