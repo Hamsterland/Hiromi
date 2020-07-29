@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
+using Hiromi.Bot.Preconditions;
 using Hiromi.Data.Models.Tags;
 using Hiromi.Services.Tags.Exceptions;
 using Hiromi.Services.Tags;
@@ -11,6 +12,7 @@ namespace Hiromi.Bot.Modules
 {
     [Name("Tag")]
     [Summary("For fast retrieval of text and memes")]
+    [RequireEnabledChannel]
     public class TagModule : InteractiveBase
     {
         private readonly ITagService _tagService;
@@ -97,7 +99,7 @@ namespace Hiromi.Bot.Modules
             var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == user.Id);
             var tagsList = tags.ToList();
             
-            if (!tagsList.Any())
+            if (tagsList.Count == 0)
             {
                 await ReplyAsync($"{user} does not have any tags.");
                 return;

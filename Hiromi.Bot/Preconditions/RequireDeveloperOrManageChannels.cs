@@ -6,18 +6,25 @@ using Discord.Commands;
 
 namespace Hiromi.Bot.Preconditions
 {
-    public class RequireDeveloperOrManageChannels : PreconditionAttribute
+    public class RequireDeveloperOrPermissionAttribute : PreconditionAttribute
     {
+        public GuildPermission Permission;
+
+        public RequireDeveloperOrPermissionAttribute(GuildPermission permission)
+        {
+            Permission = permission;
+        }
+        
         private readonly List<ulong> _developers = new List<ulong> { 330746772378877954 };
         
         public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
         {
-            if (_developers.Contains(context.User.Id) || (context.User as IGuildUser).GuildPermissions.ManageChannels)
+            if ((context.User as IGuildUser).GuildPermissions.Has(Permission) || _developers.Contains(context.User.Id))
             {
                 return Task.FromResult(PreconditionResult.FromSuccess());
             }
 
-            return Task.FromResult(PreconditionResult.FromError("User is not a developer or cannot manage channels."));
+            return Task.FromResult(PreconditionResult.FromError("Insufficient Permissions"));
         }
     }
 }

@@ -60,7 +60,9 @@ namespace Hiromi.Listeners
                         {
                             await message.Channel.SendMessageAsync(embed: CreateEmbed(user, retrievedMessage));
                             if (botChannelPermissions.ManageMessages)
+                            {
                                 await message.DeleteAsync();
+                            }
                         }
                     }
                 }

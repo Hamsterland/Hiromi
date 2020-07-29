@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -18,7 +17,7 @@ namespace Hiromi.Services.Listeners.Messages
             _tagService = tagService;
         }
     
-        private readonly Regex _inlineTagRegex = new Regex(@"\$(\S)",
+        private readonly Regex _inlineTagRegex = new Regex(@"^\$([\s\S]*)",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         public async Task Handle(MessageReceivedNotification notification, CancellationToken cancellationToken)
@@ -30,17 +29,7 @@ namespace Hiromi.Services.Listeners.Messages
             {
                 return;
             }
-
-            if (channel.Id == 636631013715476493 
-                || channel.Id == 636631078693765144
-                || channel.Id == 636630976373587994
-                || channel.Id == 636684229652119579
-                || channel.Id == 381890266052689920
-                || channel.Id == 700496613537480864)
-            {
-                return;
-            }
-
+            
             var match = _inlineTagRegex.Match(message.Content);
             if (match.Success)
             {

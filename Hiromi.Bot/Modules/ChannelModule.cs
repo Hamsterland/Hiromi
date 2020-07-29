@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Hiromi.Bot.Preconditions;
 using Hiromi.Services.Commands;
 
 namespace Hiromi.Bot.Modules
@@ -8,6 +9,7 @@ namespace Hiromi.Bot.Modules
     [Name("Channel")]
     [Summary("Handles channel configuration")]
     [Remarks("To be merged with the LogChannel module")]
+    [RequireDeveloperOrPermission(GuildPermission.ManageChannels)]
     public class ChannelModule : ModuleBase<SocketCommandContext>
     {
         private readonly ICommandToggleService _commandToggleService;
@@ -29,9 +31,9 @@ namespace Hiromi.Bot.Modules
 
         [Command("enable module")]
         [Summary("Enables a module in a channel")]
-        public async Task EnableModule(ModuleInfo module, IGuildChannel channel = null)
+        public async Task EnableModule(ModuleInfo module, IGuildChannel channel)
         {
-            channel ??= Context.Channel as IGuildChannel;
+            // channel ??= Context.Channel as IGuildChannel;
 
             await _commandToggleService.EnableModuleAsync(channel.Id, module);
             await ReplyAsync($"Enabled module \"{module.Name}\" in <#{channel.Id}> (if it wasn't already enabled).");
