@@ -21,6 +21,13 @@ namespace Hiromi.Bot.Modules
         {
             _tagService = tagService;
         }
+
+        [Command("tag")]
+        [Summary("Invokes a tag")]
+        public async Task Tag(TagSummary tag)
+        {
+            await _tagService.InvokeTagAsync(Context.Guild.Id, Context.Channel.Id, tag.Name);
+        }
         
         [Command("tag create")]
         [Summary("Creates a tag")]

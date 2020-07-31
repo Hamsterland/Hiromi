@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using Hiromi.Services.Commands;
 using Hiromi.Services.Notifications;
 using Hiromi.Services.Tags;
 using MediatR;
@@ -11,10 +12,14 @@ namespace Hiromi.Services.Listeners.Messages
     public class MessageTagListener : INotificationHandler<MessageReceivedNotification>
     {
         private readonly ITagService _tagService;
+        private readonly ICommandStoreService _commandStoreService;
 
-        public MessageTagListener(ITagService tagService)
+        public MessageTagListener(
+            ITagService tagService, 
+            ICommandStoreService commandStoreService)
         {
             _tagService = tagService;
+            _commandStoreService = commandStoreService;
         }
     
         private readonly Regex _inlineTagRegex = new Regex(@"^\$([\s\S]*)",
@@ -26,6 +31,13 @@ namespace Hiromi.Services.Listeners.Messages
                 || !(message.Author is IGuildUser user)
                 || !(message.Channel is ITextChannel channel)
                 || user.IsBot)
+            {
+                return;
+            }
+
+            var enabledCommands = _commandStoreService.GetEnabledCommands(channel.Id);
+
+            if (!enabledCommands.Contains("tag"))
             {
                 return;
             }

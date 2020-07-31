@@ -78,6 +78,8 @@ namespace Hiromi.Services.Commands
                     ChannelId = channelId,
                     IsLogChannel = false
                 });
+
+                await _hiromiContext.SaveChangesAsync();
             }
             
             var current = await _hiromiContext
