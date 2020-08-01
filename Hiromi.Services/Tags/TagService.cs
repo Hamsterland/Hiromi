@@ -129,6 +129,17 @@ namespace Hiromi.Services.Tags
                 .Select(TagSummary.FromEntityProjection)
                 .ToListAsync();
         }
+
+        public async Task<bool> CanMaintain(string name, IGuildUser user)
+        {
+            var tag = await _hiromiContext
+                .Tags
+                .Where(x => x.GuildId == user.GuildId)
+                .Where(x => x.Name == name)
+                .FirstOrDefaultAsync();
+            
+            return tag.OwnerId == user.Id || user.GuildPermissions.ManageMessages;
+        }
         
         public Embed FormatMatchedTags(string name, IEnumerable<TagSummary> matches)
         {

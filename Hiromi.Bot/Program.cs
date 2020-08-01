@@ -57,7 +57,8 @@ namespace Hiromi.Bot
                 {
                     LogLevel = LogSeverity.Verbose,
                     DefaultRunMode = RunMode.Sync,
-                    CaseSensitiveCommands = false
+                    CaseSensitiveCommands = false,
+                    IgnoreExtraArgs = false,
                 });
 
                 collection
@@ -67,7 +68,6 @@ namespace Hiromi.Bot
                     {
                         commandService.AddTypeReader<CommandInfo>(new CommandTypeReader());
                         commandService.AddTypeReader<ModuleInfo>(new ModuleTypeReader());
-                        commandService.AddTypeReader<TagSummary>(new TagSummaryTypeReader());
                         commandService.AddModulesAsync(Assembly.GetEntryAssembly(), provider);
                         return commandService;
                     })

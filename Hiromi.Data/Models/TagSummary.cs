@@ -13,11 +13,6 @@ namespace Hiromi.Data.Models.Tags
         public string Content { get; set; }
         public int Uses { get; set; }
         public DateTime TimeCreated { get; set; }
-
-        public bool CanMaintain(IGuildUser user)
-        {
-            return OwnerId == user.Id || user.GuildPermissions.ManageMessages;
-        }
         
         public static readonly Expression<Func<Tag, TagSummary>> FromEntityProjection = tagEntity => new TagSummary
         {

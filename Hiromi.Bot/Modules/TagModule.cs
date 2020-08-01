@@ -1,10 +1,13 @@
 ﻿using System.Linq;
+using System.Reflection.Metadata;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
 using Hiromi.Data.Models.Tags;
+using Hiromi.Services;
 using Hiromi.Services.Tags.Exceptions;
 using Hiromi.Services.Tags;
 
@@ -23,115 +26,117 @@ namespace Hiromi.Bot.Modules
         }
 
         [Command("tag")]
-        [Priority(-1)]
         [Summary("Invokes a tag")]
-        public async Task Tag(TagSummary tag)
+        public async Task Tag(string name)
         {
-            await _tagService.InvokeTagAsync(Context.Guild.Id, Context.Channel.Id, tag.Name);
+            await _tagService.InvokeTagAsync(Context.Guild.Id, Context.Channel.Id, name);
         }
         
         [Command("tag create")]
         [Summary("Creates a tag")]
         public async Task Create(string name, [Remainder] string content)
         {
+            if (name.Length > 50)
+            {
+                await ReplyAsync("Tag names cannot be greater than 50 characters.");
+                return;
+            }
+            
+            var current = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == Context.User.Id);
+            
+            if (current.Count() == 15)
+            {
+                await ReplyAsync($"{Context.User.Mention} you have reached your limit of 15 tags.");
+                return;
+            }
+            
             try
             {
                 await _tagService.CreateTagAsync(Context.Guild.Id, Context.User.Id, name, content);
-                await ReplyAsync($"Created tag \"{name}\" (See `tag info {name} for its Id`).");
+                await ReplyAsync($"Created tag \"{name}\".");
             }
             catch (TagAlreadyExistsException)
             {
                 await ReplyAsync($"A tag by name \"{name}\" already exists.");
             }
         }
-        
+
         [Command("tag delete")]
         [Summary("Deletes a tag by Id")]
-        public async Task Delete(TagSummary tag)
+        public async Task Delete(string name)
         {
-            if (!tag.CanMaintain(Context.User as IGuildUser))
+            if (!await _tagService.CanMaintain(name, Context.User as IGuildUser))
             {
                 await ReplyAsync("You cannot delete this tag.");
                 return;
             }
 
-            await _tagService.DeleteTagAsync(tag.GuildId, tag.Name);
-            await ReplyAsync($"Deleted tag \"{tag.Name}\".");
+            await _tagService.DeleteTagAsync(Context.Guild.Id, name);
+            await ReplyAsync($"Deleted tag \"{name}\".");
         }
 
-        [Command("tag rename")]
-        [Summary("Renames a tag")]
-        public async Task Rename(TagSummary tag, string name)
-        {
-            if (!tag.CanMaintain(Context.User as IGuildUser))
-            {
-                await ReplyAsync($"{Context.User.Mention} you cannot rename tag \"{tag.Name}\"");
-                return;
-            }
-            
-            await _tagService.ModifyTagAsync(tag.GuildId, tag.Name, x => x.Name = name);
-            await ReplyAsync($"Renamed tag \"{tag.Name}\" to \"{name}\".");
-        }
 
         [Command("tag transfer")]
         [Summary("Transfers ownership of a tag")]
-        public async Task Transfer(TagSummary tag, IGuildUser user)
+        public async Task Transfer(string name, IGuildUser user)
         {
-            if (!tag.CanMaintain(Context.User as IGuildUser))
+            if (!await _tagService.CanMaintain(name, Context.User as IGuildUser))
             {
-                await ReplyAsync($"{Context.User.Mention} you cannot transfer tag \"{tag.Name}\"");
+                await ReplyAsync($"{Context.User.Mention} you cannot transfer tag \"{name}\"");
                 return;
             }
-            
-            await _tagService.ModifyTagAsync(tag.GuildId, tag.Name, x => x.OwnerId = user.Id);
-            await ReplyAsync($"Transferred tag \"{tag.Name}\" to {user}.");
+
+            await _tagService.ModifyTagAsync(Context.Guild.Id, name, x => x.OwnerId = user.Id);
+            await ReplyAsync($"Transferred tag \"{name}\" to {user}.");
         }
 
         [Command("tag info")]
         [Summary("Provides tag information")]
-        public async Task Info(TagSummary tag)
+        public async Task Info(string name)
         {
+            var tag = await _tagService.GetTagSummaryAsync(Context.Guild.Id, name);
+
+            if (tag is null)
+            {
+                await ReplyAsync($"No tag called \"{name}\" found.");
+                return;
+            }
+
             var author = Context.Guild.GetUser(tag.AuthorId);
             var owner = Context.Guild.GetUser(tag.OwnerId);
-            
+
             var embed = _tagService.FormatTagInfo(author, owner, tag);
             await ReplyAsync(embed: embed);
         }
 
-        // [Command("tags guild")]
-        // [Summary("Lists the guild's tags")]
-        // public async Task GuildTags()
-        // {
-        //     var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.GuildId == Context.Guild.Id);
-        //     var tagsList = tags.ToList();
-        //
-        //     if (tagsList.Count == 0)
-        //     {
-        //         await ReplyAsync($"{Context.Guild.Name} does not have any tags.");
-        //         return;
-        //     }
-        //
-        //     var pager = _tagService.FormatGuildTags(Context.Guild, tagsList);
-        //     await PagedReplyAsync(pager, default);
-        // }
-        
         [Command("tags")]
         [Summary("Lists a user's tags")]
-        public async Task Tags(IGuildUser user)
+        public async Task Tags(IGuildUser user = null)
         {
+
+            user ??= Context.User as IGuildUser;
             var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == user.Id);
-            var tagsList = tags.ToList();
-            
-            if (tagsList.Count == 0)
+
+            var sb = new StringBuilder()
+                .AppendLine("```");
+
+            foreach (var tag in tags)
             {
-                await ReplyAsync($"{user} does not have any tags.");
-                return;
+                sb.AppendLine(tag.Name);
             }
 
-            await ReplyAsync(string.Join(',', tagsList.Select(x => x.Name)));
+            sb.AppendLine("```");
 
-            // var pager = _tagService.FormatUserTags(user, tagsList);
-            // await PagedReplyAsync(pager, new ReactionList());
+            var embed = new EmbedBuilder()
+                .WithColor(Constants.DefaultEmbedColour)
+                .WithAuthor(author =>
+                    author
+                        .WithName($"{user}'s Tags")
+                        .WithIconUrl(user.GetAvatarUrl()))
+                .WithDescription(sb.ToString())
+                .Build();
+
+            await ReplyAsync(embed: embed);
         }
     }
 }
