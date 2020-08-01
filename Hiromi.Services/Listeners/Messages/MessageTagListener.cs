@@ -42,7 +42,7 @@ namespace Hiromi.Services.Listeners.Messages
                 return;
             }
 
-            if (message.Content.Length <= 0)
+            if (message.Content.Length <= 1)
             {
                 return; 
             }
