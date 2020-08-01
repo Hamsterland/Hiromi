@@ -41,6 +41,11 @@ namespace Hiromi.Services.Listeners.Messages
             {
                 return;
             }
+
+            if (message.Content.Length <= 0)
+            {
+                return; 
+            }
             
             var match = _inlineTagRegex.Match(message.Content);
             if (match.Success)

@@ -20,5 +20,6 @@ namespace Hiromi.Services.Tags
         Embed FormatMatchedTags(string name, IEnumerable<TagSummary> matches);
         Embed FormatTagInfo(IUser author, IUser owner, TagSummary tag);
         PaginatedMessage FormatUserTags(IUser user, IEnumerable<TagSummary> tags);
+        PaginatedMessage FormatGuildTags(IGuild guild, IEnumerable<TagSummary> tags);
     }
 }

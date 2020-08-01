@@ -23,6 +23,7 @@ namespace Hiromi.Bot.Modules
         }
 
         [Command("tag")]
+        [Priority(-1)]
         [Summary("Invokes a tag")]
         public async Task Tag(TagSummary tag)
         {
@@ -97,12 +98,27 @@ namespace Hiromi.Bot.Modules
             await ReplyAsync(embed: embed);
         }
 
+        // [Command("tags guild")]
+        // [Summary("Lists the guild's tags")]
+        // public async Task GuildTags()
+        // {
+        //     var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.GuildId == Context.Guild.Id);
+        //     var tagsList = tags.ToList();
+        //
+        //     if (tagsList.Count == 0)
+        //     {
+        //         await ReplyAsync($"{Context.Guild.Name} does not have any tags.");
+        //         return;
+        //     }
+        //
+        //     var pager = _tagService.FormatGuildTags(Context.Guild, tagsList);
+        //     await PagedReplyAsync(pager, default);
+        // }
+        
         [Command("tags")]
         [Summary("Lists a user's tags")]
-        public async Task Tags(IGuildUser user = null)
+        public async Task Tags(IGuildUser user)
         {
-            user ??= Context.User as IGuildUser;
-            
             var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == user.Id);
             var tagsList = tags.ToList();
             
@@ -112,8 +128,10 @@ namespace Hiromi.Bot.Modules
                 return;
             }
 
-            var pager = _tagService.FormatUserTags(user, tagsList);
-            await PagedReplyAsync(pager, default);
+            await ReplyAsync(string.Join(',', tagsList.Select(x => x.Name)));
+
+            // var pager = _tagService.FormatUserTags(user, tagsList);
+            // await PagedReplyAsync(pager, new ReactionList());
         }
     }
 }
