@@ -17,8 +17,6 @@ namespace Hiromi.Services.Tags
         Task<TagSummary> GetTagSummaryAsync(ulong guildId, string name);
         Task<IEnumerable<TagSummary>> GetTagSummaries(ulong guildId, Expression<Func<Tag, bool>> criteria);
         Task<IEnumerable<TagSummary>> GetTagSummaryMatches(ulong guildId, string name);
-        Task<bool> CanMaintain(string name, IGuildUser user);
-        Embed FormatMatchedTags(string name, IEnumerable<TagSummary> matches);
-        Embed FormatTagInfo(IUser author, IUser owner, TagSummary tag);
+        Task<bool> HasMaintenancePermissions(string name, IGuildUser user);
     }
 }

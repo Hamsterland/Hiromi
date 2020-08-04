@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Addons.Interactive;
 using Discord.WebSocket;
 using Hiromi.Data;
 using Hiromi.Data.Models.Tags;
 using Hiromi.Services.Tags.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using MoreLinq;
-
 namespace Hiromi.Services.Tags
 {
     public class TagService : ITagService
@@ -41,7 +37,7 @@ namespace Hiromi.Services.Tags
             if (tag is null)
             {
                 var tags = await GetTagSummaryMatches(guildId, name);
-                var embed = FormatMatchedTags(name, tags);
+                var embed = TagViews.FormatSimilarTags(name, tags);
                 await channel.SendMessageAsync(embed: embed);
                 return;
             }
@@ -130,7 +126,7 @@ namespace Hiromi.Services.Tags
                 .ToListAsync();
         }
 
-        public async Task<bool> CanMaintain(string name, IGuildUser user)
+        public async Task<bool> HasMaintenancePermissions(string name, IGuildUser user)
         {
             var tag = await _hiromiContext
                 .Tags
@@ -139,44 +135,6 @@ namespace Hiromi.Services.Tags
                 .FirstOrDefaultAsync();
             
             return tag.OwnerId == user.Id || user.GuildPermissions.ManageMessages;
-        }
-        
-        public Embed FormatMatchedTags(string name, IEnumerable<TagSummary> matches)
-        {
-            var embed = new EmbedBuilder().WithColor(Constants.DefaultEmbedColour);
-            
-            var tags = matches.ToList();
-            if (tags.Count > 0)
-            {
-                var builder = new StringBuilder()
-                    .AppendLine($"No tag called \"{name}\" found. Did you mean?")
-                    .AppendLine("```");
-                
-                foreach (var match in tags)
-                {
-                    builder.AppendLine(match.Name);
-                }
-
-                builder.AppendLine("```");
-                embed.WithDescription(builder.ToString());
-            }
-            else
-            {
-                embed.WithDescription($"No tag called \"{name}\"");
-            }
-
-            return embed.Build();
-        }
-
-        public Embed FormatTagInfo(IUser author, IUser owner, TagSummary tag)
-        {
-            return new EmbedBuilder()
-                .WithColor(Constants.DefaultEmbedColour)
-                .AddField("Name", tag.Name)
-                .AddField("Uses", tag.Uses)
-                .AddField("Owner", owner)
-                .AddField("Author", author)
-                .Build();
         }
     }
 }

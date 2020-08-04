@@ -34,7 +34,7 @@ namespace Hiromi.Bot.Modules
         [Summary("Creates a tag")]
         public async Task Create(string name, [Remainder] string content)
         {
-            if (name.Length > 50)
+            if (!TagUtilities.IsWithinNameLimit(name))
             {
                 await ReplyAsync("Tag names cannot be greater than 50 characters.");
                 return;
@@ -42,7 +42,7 @@ namespace Hiromi.Bot.Modules
             
             var current = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == Context.User.Id);
             
-            if (current.Count() == 15)
+            if (!TagUtilities.IsWithinMaxTagLimit(current))
             {
                 await ReplyAsync($"{Context.User.Mention} you have reached your limit of 15 tags.");
                 return;
@@ -63,7 +63,7 @@ namespace Hiromi.Bot.Modules
         [Summary("Deletes a tag by Id")]
         public async Task Delete(string name)
         {
-            if (!await _tagService.CanMaintain(name, Context.User as IGuildUser))
+            if (!await _tagService.HasMaintenancePermissions(name, Context.User as IGuildUser))
             {
                 await ReplyAsync("You cannot delete this tag.");
                 return;
@@ -78,7 +78,7 @@ namespace Hiromi.Bot.Modules
         [Summary("Transfers ownership of a tag")]
         public async Task Transfer(string name, IGuildUser user)
         {
-            if (!await _tagService.CanMaintain(name, Context.User as IGuildUser))
+            if (!await _tagService.HasMaintenancePermissions(name, Context.User as IGuildUser))
             {
                 await ReplyAsync($"{Context.User.Mention} you cannot transfer tag \"{name}\"");
                 return;
@@ -103,7 +103,7 @@ namespace Hiromi.Bot.Modules
             var author = Context.Guild.GetUser(tag.AuthorId);
             var owner = Context.Guild.GetUser(tag.OwnerId);
 
-            var embed = _tagService.FormatTagInfo(author, owner, tag);
+            var embed = TagViews.FormatTagInfo(author, owner, tag);
             await ReplyAsync(embed: embed);
         }
 
@@ -111,29 +111,10 @@ namespace Hiromi.Bot.Modules
         [Summary("Lists a user's tags")]
         public async Task Tags(IGuildUser user = null)
         {
-
             user ??= Context.User as IGuildUser;
             var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == user.Id);
-
-            var sb = new StringBuilder()
-                .AppendLine("```");
-
-            foreach (var tag in tags)
-            {
-                sb.AppendLine(tag.Name);
-            }
-
-            sb.AppendLine("```");
-
-            var embed = new EmbedBuilder()
-                .WithColor(Constants.DefaultEmbedColour)
-                .WithAuthor(author =>
-                    author
-                        .WithName($"{user}'s Tags")
-                        .WithIconUrl(user.GetAvatarUrl()))
-                .WithDescription(sb.ToString())
-                .Build();
-
+            
+            var embed = TagViews.FormatUserTags(user, tags);
             await ReplyAsync(embed: embed);
         }
     }

@@ -15,14 +15,10 @@ namespace Hiromi.Modules
     public class HelpModule : InteractiveBase
     {
         private readonly CommandService _commandService;
-        private readonly IHelpService _helpService;
 
-        public HelpModule(
-            CommandService commandService,
-            IHelpService helpService)
+        public HelpModule(CommandService commandService)
         {
             _commandService = commandService;
-            _helpService = helpService;
         }
         
         [Command("help")]
@@ -32,12 +28,11 @@ namespace Hiromi.Modules
         {
             var modules = _commandService.Modules.OrderBy(x => x.Name);
             var pages = new List<EmbedPage>();
-
+            
             foreach (var module in modules)
             {
-                var fields = new List<EmbedFieldBuilder>();
-                _helpService.AddCommandUsage(module, ref fields);
-                _helpService.AddHelpPages(module, fields, ref pages);
+                var fields = HelpUtilities.GetCommandUsagesFromModule(module);
+                HelpUtilities.AddHelpPages(module, fields, ref pages);
             }
             
             var pagedEmbed = new PaginatedMessage
@@ -54,11 +49,10 @@ namespace Hiromi.Modules
         [Summary("Module reference")]
         public async Task Help(ModuleInfo module)
         {
-            var fields = new List<EmbedFieldBuilder>();
-            _helpService.AddCommandUsage(module, ref fields);
-            
+            var fields = HelpUtilities.GetCommandUsagesFromModule(module);
             var pages = new List<EmbedPage>();
-            _helpService.AddHelpPages(module, fields, ref pages);
+            
+            HelpUtilities.AddHelpPages(module, fields, ref pages);
             
             var pagedEmbed = new PaginatedMessage
             {
@@ -76,7 +70,7 @@ namespace Hiromi.Modules
             var embed = new EmbedBuilder()
                 .WithColor(Constants.DefaultEmbedColour)
                 .WithTitle(command.Name)
-                .AddField("Usage", _helpService.GetCommandUsage(command))
+                .AddField("Usage", HelpUtilities.GetCommandUsage(command))
                 .AddField("Summary", command.Summary);
         
             if (command.Aliases.Count != 0)

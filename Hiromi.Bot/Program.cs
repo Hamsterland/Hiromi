@@ -78,8 +78,7 @@ namespace Hiromi.Bot
                     .AddSingleton<ICommandStoreService, CommandStoreService>()
                     .AddSingleton<ICommandToggleService, CommandToggleService>()
                     .AddSingleton<ITagService, TagService>()
-                    .AddSingleton<ILogChannelService, LogChannelService>()
-                    .AddSingleton<IHelpService, HelpService>();
+                    .AddSingleton<ILogChannelService, LogChannelService>();
             })
             .RunConsoleAsync();
     }
