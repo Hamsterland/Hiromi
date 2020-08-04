@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Reflection.Metadata;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -31,6 +32,26 @@ namespace Hiromi.Services.Listeners.Messages
             }
 
             var channel = _discordSocketClient.GetChannel(logChannel.ChannelId);
+
+            if (!(channel is ITextChannel textChannel))
+            {
+                return;
+            }
+
+            var builder = new EmbedBuilder()
+                .WithColor(Constants.DefaultEmbedColour)
+                .WithCurrentTimestamp();
+
+            if (!notification.Message.HasValue)
+            {
+                return; 
+            }
+
+            builder
+                .WithTitle("Message Deleted")
+                .AddField("User", notification.Message.Value.Author)
+                .AddField("Content", notification.Message.Value.Content);
+            
         }
     }
 }

@@ -1,12 +1,9 @@
 ﻿using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Addons.Interactive;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
-using Hiromi.Data.Models.Tags;
 using Hiromi.Services;
 using Hiromi.Services.Tags.Exceptions;
 using Hiromi.Services.Tags;
@@ -16,7 +13,8 @@ namespace Hiromi.Bot.Modules
     [Name("Tag")]
     [Summary("For fast retrieval of text and memes")]
     [RequireEnabledChannel]
-    public class TagModule : InteractiveBase
+    public class TagModule : ModuleBase<SocketCommandContext>
+
     {
         private readonly ITagService _tagService;
 

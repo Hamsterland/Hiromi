@@ -178,59 +178,5 @@ namespace Hiromi.Services.Tags
                 .AddField("Author", author)
                 .Build();
         }
-
-        public PaginatedMessage FormatUserTags(IUser user, IEnumerable<TagSummary> tags)
-        {
-            var fields = tags
-                .Select(tagSummary => new EmbedFieldBuilder()
-                    .WithValue(tagSummary.Name)
-                    .WithIsInline(true));
-
-            var pages = new List<EmbedPage>(fields
-                .Batch(10)
-                .Select(x => new EmbedPage
-                {
-                    Author = new EmbedAuthorBuilder()
-                        .WithName($"{user}'s Tags")
-                        .WithIconUrl(user.GetAvatarUrl()),
-
-                    TotalFieldMessage = "Tags",
-                    Fields = x.ToList(),
-                    Color = Constants.DefaultEmbedColour
-                }));
-
-            return new PaginatedMessage
-            {
-                Pages = pages,
-                Options = new PaginatedAppearanceOptions { Timeout = TimeSpan.FromMinutes(1) }
-            };
-        }
-
-        public PaginatedMessage FormatGuildTags(IGuild guild, IEnumerable<TagSummary> tags)
-        {
-            var fields = tags
-                .Select(tagSummary => new EmbedFieldBuilder()
-                    .WithValue(tagSummary.Name)
-                    .WithIsInline(true));
-            
-            var pages = new List<EmbedPage>(fields
-                .Batch(10)
-                .Select(x => new EmbedPage
-                {
-                    Author = new EmbedAuthorBuilder()
-                        .WithName($"{guild} Tags")
-                        .WithIconUrl(guild.IconUrl),
-
-                    TotalFieldMessage = "Tags",
-                    Fields = x.ToList(),
-                    Color = Constants.DefaultEmbedColour
-                }));
-            
-            return new PaginatedMessage
-            {
-                Pages = pages,
-                Options = new PaginatedAppearanceOptions { Timeout = TimeSpan.FromMinutes(1) }
-            };
-        }
     }
 }

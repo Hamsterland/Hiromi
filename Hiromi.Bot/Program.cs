@@ -76,10 +76,10 @@ namespace Hiromi.Bot
                     .AddHostedService<DiscordSocketListener>()
                     .AddSingleton<InteractiveService>()
                     .AddSingleton<ICommandStoreService, CommandStoreService>()
-                    .AddScoped<ICommandToggleService, CommandToggleService>()
-                    .AddScoped<ITagService, TagService>()
-                    .AddScoped<ILogChannelService, LogChannelService>()
-                    .AddScoped<IHelpService, HelpService>();
+                    .AddSingleton<ICommandToggleService, CommandToggleService>()
+                    .AddSingleton<ITagService, TagService>()
+                    .AddSingleton<ILogChannelService, LogChannelService>()
+                    .AddSingleton<IHelpService, HelpService>();
             })
             .RunConsoleAsync();
     }
