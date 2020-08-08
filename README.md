@@ -11,8 +11,9 @@ A Discord bot.
 * Tags
 * Auto-quote 
 * Logging (WIP)
+* Reminders (WIP)
 
-## Repo
+## Repository
 All contributions are welcome. Please don't feel the need to discuss, just make whatever contributions you want. However, do be aware of Hiromi's basic architecture.
 
 ### Hiromi.Data
@@ -28,3 +29,5 @@ All reusable business logic belongs here. There should ideally be as few referen
 * Logic that does not require any injected dependencies should be in a static utilities class (i.e. `TagUtilities`).
 * Logic that renders data into a view for Discord (such as an embed) should be in a static views class (i.e. `TagViews`).
 
+### Hiromi.Bot
+The part that users interfact with. This contains commands that usually rely on injected services, attributes, type readers, and so on.
