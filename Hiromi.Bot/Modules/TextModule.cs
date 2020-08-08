@@ -24,6 +24,7 @@ namespace Hiromi.Bot.Modules
         public async Task Status(ActivityType type, [Remainder] string status)
         {
             await Context.Client.SetGameAsync(status, type: type);
+            await ReplyAsync("Status changed.");
         }
     }
 }

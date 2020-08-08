@@ -1,4 +1,5 @@
-﻿using Hiromi.Data.Models.Tags;
+﻿using Hiromi.Data.Models;
+using Hiromi.Data.Models.Tags;
 using Microsoft.EntityFrameworkCore;
 using Channel = Hiromi.Data.Models.Channels.Channel;
 
@@ -9,6 +10,8 @@ namespace Hiromi.Data
         public DbSet<Tag> Tags { get; set; }
         
         public DbSet<Channel> Channels { get; set; }
+        
+        public DbSet<Reminder> Reminders { get; set; }
         
         public HiromiContext(DbContextOptions options) : base(options)
         { }
