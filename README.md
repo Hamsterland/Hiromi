@@ -5,8 +5,8 @@
 # Hiromi
 A Discord bot.
 
-|**Prefix**: -|**Lead:** [@Hamsterland](https://github.com/Hamsterland)|**Lang:** C#|**Library:** [Discord.Net](https://github.com/discord-net/Discord.Net)|||**Runtime**: .NET Core 3
-|---|---|---|---|---|---|---|
+|**Prefix**: -|**Lead:** [@Hamsterland](https://github.com/Hamsterland)|**Lang:** C#|**Library:** [Discord.Net](https://github.com/discord-net/Discord.Net)|**Runtime**: .NET Core 3
+|---|---|---|---|---|
 ## Features
 * Tags
 * Auto-quote 
