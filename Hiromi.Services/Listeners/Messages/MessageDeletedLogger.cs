@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -38,20 +37,22 @@ namespace Hiromi.Services.Listeners.Messages
                 return;
             }
 
-            var builder = new EmbedBuilder()
-                .WithColor(Constants.DefaultEmbedColour)
-                .WithCurrentTimestamp();
+            var embed = new EmbedBuilder()
+                .WithTitle("Message Deleted")
+                .WithColor(Constants.DefaultEmbedColour);
 
             if (!notification.Message.HasValue)
             {
-                return; 
+                embed.WithDescription("Due to reasons you won't understand, I was not able to retrieve the message content.");
+            }
+            else
+            {
+                embed
+                    .AddField("User", notification.Message.Value.Author)
+                    .AddField("Content", notification.Message.Value.Content);
             }
 
-            builder
-                .WithTitle("Message Deleted")
-                .AddField("User", notification.Message.Value.Author)
-                .AddField("Content", notification.Message.Value.Content);
-            
+            await textChannel.SendMessageAsync(embed: embed.Build());
         }
     }
 }

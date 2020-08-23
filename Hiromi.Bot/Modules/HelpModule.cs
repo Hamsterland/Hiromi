@@ -23,7 +23,6 @@ namespace Hiromi.Modules
         {
             var modules = _commandService.Modules.OrderBy(x => x.Name);
             var pager = HelpViews.FormatHelp(modules);
-            
             await PagedReplyAsync(pager, new ReactionList());
         }
 

@@ -10,6 +10,7 @@ using Hiromi.Data;
 using Hiromi.Services.Commands;
 using Hiromi.Services.Core;
 using Hiromi.Services.Listeners;
+using Hiromi.Services.Listeners.Log;
 using Hiromi.Services.Logging;
 using Hiromi.Services.Tags;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +73,7 @@ namespace Hiromi.Bot
                     .AddDbContext<HiromiContext>(options => options.UseNpgsql(configuration["Postgres:Connection"]))
                     .AddHostedService<StartupService>()
                     .AddHostedService<DiscordSocketListener>()
+                    .AddSingleton<DiscordLogListener>()
                     .AddSingleton<InteractiveService>()
                     .AddSingleton<ICommandStoreService, CommandStoreService>()
                     .AddSingleton<ICommandToggleService, CommandToggleService>()
