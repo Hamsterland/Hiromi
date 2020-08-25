@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq.Expressions;
+using Hiromi.Data.Models.Channels;
 
 namespace Hiromi.Data.Models
 {
@@ -12,6 +14,19 @@ namespace Hiromi.Data.Models
 
         public string Message { get; set; }
 
+        public DateTime TimeInvoked { get; set; }
+        
         public TimeSpan Duration { get; set; }
+        
+        public static readonly Expression<Func<Reminder, ReminderSummary>> FromEntityProjection = reminder =>
+            new ReminderSummary
+            {
+                Id = reminder.Id,
+                UserId = reminder.UserId,
+                GuildId = reminder.GuildId,
+                Message = reminder.Message,
+                TimeInvoked = reminder.TimeInvoked,
+                Duration = reminder.Duration
+            };
     }
 }

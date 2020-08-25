@@ -7,11 +7,12 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Hiromi.Bot.TypeReaders;
 using Hiromi.Data;
+using Hiromi.Data.Models;
 using Hiromi.Services.Commands;
 using Hiromi.Services.Core;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Listeners.Log;
-using Hiromi.Services.Logging;
+using Hiromi.Services.Reminders;
 using Hiromi.Services.Tags;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -46,15 +47,16 @@ namespace Hiromi.Bot
                 {
                     AlwaysDownloadUsers = true,
                     MessageCacheSize = 10000,
+                    
                     GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMessages |
-                                     GatewayIntents.GuildMessageReactions | GatewayIntents.GuildVoiceStates | 
-                                     GatewayIntents.GuildPresences,
+                                     GatewayIntents.GuildMessageReactions | GatewayIntents.GuildPresences,
+                    
                     LogLevel = LogSeverity.Verbose
                 });
                 
                 var commandService = new CommandService(new CommandServiceConfig
                 {
-                    LogLevel = LogSeverity.Verbose,
+                    LogLevel = LogSeverity.Debug,
                     DefaultRunMode = RunMode.Sync,
                     CaseSensitiveCommands = false,
                     IgnoreExtraArgs = false,
@@ -78,7 +80,7 @@ namespace Hiromi.Bot
                     .AddSingleton<ICommandStoreService, CommandStoreService>()
                     .AddSingleton<ICommandToggleService, CommandToggleService>()
                     .AddSingleton<ITagService, TagService>()
-                    .AddSingleton<ILogChannelService, LogChannelService>();
+                    .AddSingleton<IReminderService, ReminderService>();
             })
             .RunConsoleAsync();
     }

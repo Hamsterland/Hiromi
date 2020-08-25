@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using Hiromi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hiromi.Data.Migrations
 {
     [DbContext(typeof(HiromiContext))]
-    partial class HiromiContextModelSnapshot : ModelSnapshot
+    [Migration("20200823223442_RemoveReminderIsSuccess")]
+    partial class RemoveReminderIsSuccess
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,21 +57,18 @@ namespace Hiromi.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<bool>("Completed")
-                        .HasColumnType("boolean");
-
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("interval");
 
                     b.Property<long>("GuildId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("Completed")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("TimeInvoked")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");

@@ -2,12 +2,13 @@
 using Discord;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
+using Hiromi.Services.Attributes;
 
 namespace Hiromi.Bot.Modules
 {
     [Name("Text")]
     [Summary("Misc text-based commands")]
-    [RequireEnabledChannel]
+    [RequireEnabledInChannel]
     public class TextModule : ModuleBase<SocketCommandContext>
     {
         [Command("echo")]
@@ -18,6 +19,7 @@ namespace Hiromi.Bot.Modules
             await Context.Message.DeleteAsync();
         }
         
+        [HelpIgnore]
         [RequireDeveloper]
         [Command("status")]
         [Summary("Sets Hiromi's status")]

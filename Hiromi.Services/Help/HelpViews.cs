@@ -6,7 +6,7 @@ using Discord.Commands;
 
 namespace Hiromi.Services.Help
 {
-    public class HelpViews
+    public static class HelpViews
     {
         private const int HELP_EMBED_SECONDS_TIMEOUT = 60;
         

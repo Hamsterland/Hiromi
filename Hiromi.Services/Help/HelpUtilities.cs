@@ -4,26 +4,32 @@ using System.Text;
 using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
+using Hiromi.Services.Attributes;
 using MoreLinq;
 
 namespace Hiromi.Services.Help
 {
-    public class HelpUtilities
+    public static class HelpUtilities
     {
         public static void AddHelpPages(ModuleInfo module, IEnumerable<EmbedFieldBuilder> fields, ref List<EmbedPage> pages)
         {
+            if (module.Attributes.Any(x => x is HelpIgnore))
+            {
+                return;
+            }
+            
             pages
                 .AddRange(fields
                     .Batch(5)
-                    .Select(x =>
+                    .Select(builders =>
                     {
-                        var list = x.ToList();
+                        var buildersList = builders.ToList();
                         return new EmbedPage
                         {
                             Title = $"{module.Name} Commands",
-                            TotalFieldMessage = list.Count != 1 ? "Commands" : "Command",
+                            TotalFieldMessage = buildersList.Count != 1 ? "Commands" : "Command",
                             Description = module.Summary,
-                            Fields = list.ToList(),
+                            Fields = buildersList,
                             Color = Constants.DefaultEmbedColour
                         };
                     }));
@@ -31,20 +37,24 @@ namespace Hiromi.Services.Help
         
         public static IEnumerable<EmbedFieldBuilder> GetCommandUsagesFromModule(ModuleInfo module)
         {
-            var fields = new List<EmbedFieldBuilder>();
-            
-            fields.AddRange(module.Commands
-                .Select(command => new EmbedFieldBuilder()
+            var fields = (from command in module.Commands
+                where !command.Attributes.Any(x => x is HelpIgnore)
+                select new EmbedFieldBuilder()
                     .WithName(GetCommandUsage(command))
-                    .WithValue(command.Summary)));
+                    .WithValue(command.Summary!))
+                .ToList();
+
+            // fields.AddRange(module.Commands
+            //     .Select(command => new EmbedFieldBuilder()
+            //         .WithName(GetCommandUsage(command))
+            //         .WithValue(command.Summary)));
 
             return fields;
         }
 
         public static string GetCommandUsage(CommandInfo command)
         {
-            var sb = new StringBuilder()
-                .Append(command.Name);
+            var sb = new StringBuilder().Append(command.Name);
 
             if (command.Parameters.Any())
             {

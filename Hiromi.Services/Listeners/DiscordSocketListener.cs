@@ -26,22 +26,17 @@ namespace Hiromi.Services.Listeners
         {
             _discordSocketClient.MessageReceived += MessageReceived;
             _discordSocketClient.MessageDeleted += MessageDeleted;
-
-            _discordSocketClient.UserVoiceStateUpdated += UserVoiceStaeUpdated;
-
+            
             _discordSocketClient.Log += Log;
             
             return Task.CompletedTask;
         }
         
-
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _discordSocketClient.MessageReceived -= MessageReceived;
             _discordSocketClient.MessageDeleted -= MessageDeleted;
             
-            _discordSocketClient.UserVoiceStateUpdated -= UserVoiceStaeUpdated;
-
             _discordSocketClient.Log -= Log;
             
             return Task.CompletedTask;
@@ -56,12 +51,6 @@ namespace Hiromi.Services.Listeners
         private Task MessageDeleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
         {
             _mediator.Publish(new MessageDeletedNotification(message, channel));
-            return Task.CompletedTask;
-        }
-
-        private Task UserVoiceStaeUpdated(SocketUser User, SocketVoiceState VoiceState1, SocketVoiceState VoiceState2)
-        {
-            _mediator.Publish(new UserVoiceStateUpdatedNotification(User, VoiceState1, VoiceState2));
             return Task.CompletedTask;
         }
         

@@ -12,7 +12,7 @@ namespace Hiromi.Bot.Modules
 {
     [Name("Tag")]
     [Summary("For fast retrieval of text and memes")]
-    [RequireEnabledChannel]
+    [RequireEnabledInChannel]
     public class TagModule : ModuleBase<SocketCommandContext>
 
     {

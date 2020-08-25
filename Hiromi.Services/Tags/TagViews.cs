@@ -6,7 +6,7 @@ using Hiromi.Data.Models.Tags;
 
 namespace Hiromi.Services.Tags
 {
-    public class TagViews
+    public static class TagViews
     {
         public static Embed FormatTagInfo(IUser author, IUser owner, TagSummary tag)
         {
@@ -44,8 +44,7 @@ namespace Hiromi.Services.Tags
         public static Embed FormatSimilarTags(string name, IEnumerable<TagSummary> matches)
         {
             var embed = new EmbedBuilder()
-                .WithColor(Constants.DefaultEmbedColour)
-                .WithCurrentTimestamp();
+                .WithColor(Constants.DefaultEmbedColour);
 
             var matchesList = matches.ToList();
             if (matchesList.Any())

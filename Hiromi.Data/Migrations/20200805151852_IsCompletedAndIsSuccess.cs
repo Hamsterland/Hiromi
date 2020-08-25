@@ -7,7 +7,7 @@ namespace Hiromi.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "IsCompleted",
+                name: "Completed",
                 table: "Reminders",
                 nullable: false,
                 defaultValue: false);
@@ -22,7 +22,7 @@ namespace Hiromi.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsCompleted",
+                name: "Completed",
                 table: "Reminders");
 
             migrationBuilder.DropColumn(

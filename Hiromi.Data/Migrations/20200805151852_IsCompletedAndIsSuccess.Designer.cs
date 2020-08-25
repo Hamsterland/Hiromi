@@ -63,7 +63,7 @@ namespace Hiromi.Data.Migrations
                     b.Property<long>("GuildId")
                         .HasColumnType("bigint");
 
-                    b.Property<bool>("IsCompleted")
+                    b.Property<bool>("Completed")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsSuccess")

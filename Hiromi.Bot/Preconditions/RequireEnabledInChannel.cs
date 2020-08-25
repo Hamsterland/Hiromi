@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hiromi.Bot.Preconditions
 {
-    public class RequireEnabledChannel : PreconditionAttribute
+    public class RequireEnabledInChannel : PreconditionAttribute
     {
         public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
         {

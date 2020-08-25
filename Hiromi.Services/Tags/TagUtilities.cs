@@ -4,7 +4,7 @@ using Hiromi.Data.Models.Tags;
 
 namespace Hiromi.Services.Tags
 {
-    public class TagUtilities
+    public static class TagUtilities
     {
         private const int MAX_TAG_NAME_LENGTH = 50;
         private const int MAX_TAGS_PER_USER = 15;
