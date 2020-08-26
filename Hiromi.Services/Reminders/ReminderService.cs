@@ -93,8 +93,6 @@ namespace Hiromi.Services.Reminders
 
             foreach (var reminder in reminders)
             {
-                var x = reminder.RemainingTime;
-                
                 var timer = new Timer(async _ => await HandleReminderCallbackAsync(reminder),
                     null,
                     reminder.RemainingTime,
