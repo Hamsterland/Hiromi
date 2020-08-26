@@ -13,6 +13,7 @@ using Hiromi.Services.Core;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Listeners.Log;
 using Hiromi.Services.Reminders;
+using Hiromi.Services.Stats;
 using Hiromi.Services.Tags;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -81,7 +82,8 @@ namespace Hiromi.Bot
                     .AddSingleton<ICommandStoreService, CommandStoreService>()
                     .AddSingleton<ICommandToggleService, CommandToggleService>()
                     .AddSingleton<ITagService, TagService>()
-                    .AddSingleton<IReminderService, ReminderService>();
+                    .AddSingleton<IReminderService, ReminderService>()
+                    .AddSingleton<IGuildStatsService, GuildStatsService>();
             })
             .RunConsoleAsync();
     }

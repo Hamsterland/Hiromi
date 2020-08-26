@@ -37,6 +37,11 @@ namespace Hiromi.Services.Listeners.Messages
 
             var enabledCommands = _commandStoreService.GetEnabledCommands(channel.Id);
 
+            if (enabledCommands is null)
+            {
+                return;
+            }
+            
             if (!enabledCommands.Contains("tag"))
             {
                 return;

@@ -44,7 +44,12 @@ namespace Hiromi.Services.Listeners.Messages
             if (message.HasStringPrefix(prefix, ref argPos))
             {
                 var context = new SocketCommandContext(_discordSocketClient, message);
-                await _commandService.ExecuteAsync(context, argPos, _serviceProvider);
+                var x = await _commandService.ExecuteAsync(context, argPos, _serviceProvider);
+
+                if (!x.IsSuccess)
+                {
+                    Serilog.Log.Logger.Fatal(x.ErrorReason);
+                }
             }
         }
     }

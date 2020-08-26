@@ -40,13 +40,13 @@ namespace Hiromi.Services.Reminders
             {
                 foreach (var reminder in remindersList)
                 {
-                    var title = $"Id: {reminder.Id}";
-
                     var remaining = reminder
                         .RemainingTime
                         .Humanize(_precision);
-
+                    
+                    var title = $"Id: {reminder.Id}";
                     var description = $"In {remaining}";
+                    
                     embed.AddField(title, description);
                 }    
             }

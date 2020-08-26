@@ -42,22 +42,19 @@ namespace Hiromi.Services.Listeners
             return Task.CompletedTask;
         }
 
-        private Task MessageReceived(SocketMessage message)
+        private async Task MessageReceived(SocketMessage message)
         {
-            _mediator.Publish(new MessageReceivedNotification(message));
-            return Task.CompletedTask;
+            await _mediator.Publish(new MessageReceivedNotification(message));
         }
         
-        private Task MessageDeleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
+        private async Task MessageDeleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
         {
-            _mediator.Publish(new MessageDeletedNotification(message, channel));
-            return Task.CompletedTask;
+            await _mediator.Publish(new MessageDeletedNotification(message, channel));
         }
         
-        private Task Log(LogMessage logMessage)
+        private async Task Log(LogMessage logMessage)
         {
-            _mediator.Publish(new DiscordLogNotification(logMessage));
-            return Task.CompletedTask;
+            await _mediator.Publish(new DiscordLogNotification(logMessage));
         }
     }
 }

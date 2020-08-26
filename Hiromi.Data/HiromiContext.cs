@@ -12,6 +12,8 @@ namespace Hiromi.Data
         public DbSet<Channel> Channels { get; set; }
         
         public DbSet<Reminder> Reminders { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
         
         public HiromiContext(DbContextOptions options) : base(options)
         { }
