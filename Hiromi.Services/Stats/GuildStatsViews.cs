@@ -89,7 +89,7 @@ namespace Hiromi.Services.Stats
                 .OrderByDescending(x => x.Position);
 
             builder
-                .AppendLine("Roles")
+                .AppendLine(Format.Bold("Roles"))
                 .AppendLine(roles.Select(x => x.Mention).Humanize())
                 .AppendLine();
         }
