@@ -21,9 +21,19 @@ namespace Hiromi.Bot.Modules
         [Summary("Shows Guild information")]
         public async Task Info()
         {
-            var week = await _guildStatsService.GetMessagesCount(x => x.GuildId == Context.Guild.Id, TimeSpan.FromDays(7));
-            var month = await _guildStatsService.GetMessagesCount(x => x.GuildId == Context.Guild.Id, TimeSpan.FromDays(30));
-            var embed = GuildStatsViews.FormatGuildInformation(Context.Guild, week, month);
+            var weekTotal = await _guildStatsService.GetMessageCountAsync(
+                TimeSpan.FromDays(7), 
+                x => x.GuildId == Context.Guild.Id);
+
+            var monthTotal = await _guildStatsService.GetMessageCountAsync(
+                TimeSpan.FromDays(30), 
+                x => x.GuildId == Context.Guild.Id);
+            
+            var channelTotal = await _guildStatsService.GetMostMessageCountByChannelAsync(
+                Context.Guild.Id, 
+                TimeSpan.FromDays(7));
+            
+            var embed = GuildStatsViews.FormatGuildInformation(Context.Guild, weekTotal, monthTotal, channelTotal);
             await ReplyAsync(embed: embed);
         }
     }

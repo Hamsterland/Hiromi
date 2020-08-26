@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -17,18 +18,30 @@ namespace Hiromi.Services.Stats
             _hiromiContext = hiromiContext;
         }
 
-        public async Task<int> GetMessagesCount(Expression<Func<Message, bool>> criteria, TimeSpan span)
+        public async Task<int> GetMessageCountAsync(TimeSpan span, Expression<Func<Message, bool>> criteria)
         {
             var messages = await _hiromiContext
                 .Messages
                 .Where(criteria)
                 .ToListAsync();
 
+            return messages.Count(x => x.TimeSent >= DateTime.Now.Date.Subtract(span));
+        }
+
+        public async Task<IReadOnlyDictionary<ulong, int>> GetMostMessageCountByChannelAsync(ulong guildId, TimeSpan span)
+        {
+            var messages = await _hiromiContext
+                .Messages
+                .Where(x => x.GuildId == guildId)
+                .ToListAsync();
+
             var filtered = messages
                 .Where(x => x.TimeSent >= DateTime.Now.Date.Subtract(span))
-                .ToList();
+                .Select(x => x.ChannelId);
             
-            return filtered.Count;
+            return filtered
+                .GroupBy(x => x)
+                .ToDictionary(x => x.Key, x => x.Count());
         }
     }
 }
