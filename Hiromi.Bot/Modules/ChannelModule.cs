@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
+using Hiromi.Services;
 using Hiromi.Services.Commands;
 
 namespace Hiromi.Bot.Modules

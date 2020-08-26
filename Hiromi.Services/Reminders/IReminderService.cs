@@ -12,5 +12,6 @@ namespace Hiromi.Services.Reminders
         Task HandleReminderCallbackAsync(Reminder reminder);
         Task<IEnumerable<ReminderSummary>> GetActiveReminders(ulong userId);
         Task<ReminderSummary> GetActiveReminder(ulong userId, int id);
+        Task CacheReminders();
     }
 }

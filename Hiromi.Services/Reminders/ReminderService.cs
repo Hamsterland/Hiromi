@@ -84,5 +84,26 @@ namespace Hiromi.Services.Reminders
             var reminders = await GetActiveReminders(userId);
             return reminders.FirstOrDefault(x => x.Id == id);
         }
+
+        public Task CacheReminders()
+        {
+            var reminders = _hiromiContext
+                .Reminders
+                .Where(x => !x.Completed);
+
+            foreach (var reminder in reminders)
+            {
+                var x = reminder.RemainingTime;
+                
+                var timer = new Timer(async _ => await HandleReminderCallbackAsync(reminder),
+                    null,
+                    reminder.RemainingTime,
+                    Timeout.InfiniteTimeSpan);
+
+                _reminders.TryAdd(reminder.Id, timer);
+            }
+
+            return Task.CompletedTask;
+        }
     }
 }

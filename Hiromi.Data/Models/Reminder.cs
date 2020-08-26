@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -28,6 +29,12 @@ namespace Hiromi.Data.Models
         
         [Required] 
         public bool Completed { get; set; }
+        
+        [NotMapped]
+        public TimeSpan RemainingTime => TimeInvoked.Add(Duration).Subtract(DateTime.Now);
+
+        [NotMapped]
+        public TimeSpan ElapsedTime => Duration.Subtract(RemainingTime);
     }
 
     public class ReminderConfiguration : IEntityTypeConfiguration<Reminder>

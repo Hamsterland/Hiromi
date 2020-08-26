@@ -7,6 +7,9 @@ using Discord.WebSocket;
 using Hiromi.Services.Notifications;
 using MediatR;
 
+// Adapted from Modix 
+// https://github.com/discord-csharp/MODiX/blob/278d522c3265728b422c409f67fdac17555361b4/Modix.Services/Quote/MessageLinkBehavior.cs
+
 namespace Hiromi.Listeners
 {
     public class MessageLinkListener : INotificationHandler<MessageReceivedNotification>

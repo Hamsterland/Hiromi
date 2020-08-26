@@ -11,17 +11,5 @@ namespace Hiromi.Services.Reminders
         {
             return reminders.Count() <= ReminderConstants.MaxRemindersPerUser;
         }
-
-        public static TimeSpan GetRemainingTime(ReminderSummary reminder)
-        {
-            var endDate = reminder.TimeInvoked.Add(reminder.Duration);
-            return endDate.Subtract(DateTime.Now);
-        }
-
-        public static TimeSpan GetElapsedTime(ReminderSummary reminder)
-        {
-            var remainingTime = GetRemainingTime(reminder);
-            return reminder.Duration.Subtract(remainingTime);
-        }
     }
 }

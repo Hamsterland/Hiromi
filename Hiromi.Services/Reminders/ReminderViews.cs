@@ -41,9 +41,9 @@ namespace Hiromi.Services.Reminders
                 foreach (var reminder in remindersList)
                 {
                     var title = $"Id: {reminder.Id}";
-                    
-                    var remaining = ReminderUtilities
-                        .GetRemainingTime(reminder)
+
+                    var remaining = reminder
+                        .RemainingTime
                         .Humanize(_precision);
 
                     var description = $"In {remaining}";
@@ -63,13 +63,13 @@ namespace Hiromi.Services.Reminders
             var invoked = reminder
                 .TimeInvoked
                 .ToString("D");
-            
-            var elapsed = ReminderUtilities
-                .GetElapsedTime(reminder)
+
+            var elapsed = reminder
+                .ElapsedTime
                 .Humanize(_precision);
 
-            var remaining = ReminderUtilities
-                .GetRemainingTime(reminder)
+            var remaining = reminder
+                .RemainingTime
                 .Humanize(_precision);
             
             return new EmbedBuilder()

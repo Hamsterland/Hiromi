@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
+using Hiromi.Data.Models;
 using Hiromi.Services.Reminders;
 using Humanizer;
 
@@ -45,30 +46,16 @@ namespace Hiromi.Bot.Modules
 
         [Command("reminder info")]
         [Summary("Shows reminder information")]
-        public async Task Info(int id)
+        public async Task Info(ReminderSummary reminder)
         {
-            var reminder = await _reminderService.GetActiveReminder(Context.User.Id, id);
-            if (reminder is null)
-            {
-                await ReplyNotFound(id);
-                return;
-            }
-
             await ReplyAsync(embed: ReminderViews.FormarReminderInfo(reminder));
         }
 
         [Command("reminder delete")]
         [Summary("Deletes a reminder")]
-        public async Task Delete(int id)
+        public async Task Delete(ReminderSummary reminder)
         {
-            var reminder = await _reminderService.GetActiveReminder(Context.User.Id, id);
-            if (reminder is null)
-            {
-                await ReplyNotFound(id);
-                return;
-            }
-
-            await _reminderService.DeleteReminderAsync(id);
+            await _reminderService.DeleteReminderAsync(reminder.Id);
             await ReplyAsync($"{Context.User.Mention} Deleted reminder with Id {reminder.Id}.");
         }
 

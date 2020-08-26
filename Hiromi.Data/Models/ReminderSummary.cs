@@ -17,6 +17,10 @@ namespace Hiromi.Data.Models
         public DateTime TimeInvoked { get; set; }
         
         public TimeSpan Duration { get; set; }
+
+        public TimeSpan RemainingTime => TimeInvoked.Add(Duration).Subtract(DateTime.Now);
+
+        public TimeSpan ElapsedTime => Duration.Subtract(RemainingTime);
         
         public static readonly Expression<Func<Reminder, ReminderSummary>> FromEntityProjection = reminder =>
             new ReminderSummary
