@@ -25,7 +25,6 @@ namespace Hiromi.Services.Stats
                     .WithName($"{guild.Name} Information")
                     .WithIconUrl(guild.IconUrl))
                 .WithDescription(builder.ToString())
-                .WithThumbnailUrl(guild.IconUrl)
                 .Build();
         }
 
