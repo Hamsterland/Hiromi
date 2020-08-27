@@ -17,7 +17,7 @@ namespace Hiromi.Bot.Modules
         [Summary("Echoes a message")]
         public async Task Echo([Remainder] string message)
         {
-            await ReplyAndDeleteAsync(message);
+            await ReplyAsync(message);
         }
 
         [Command("uwu")]
@@ -25,10 +25,10 @@ namespace Hiromi.Bot.Modules
         public async Task Uwu([Remainder] string message)
         {
             var result = TextUtilities.Uwufy(message);
-            await ReplyAndDeleteAsync(result);
+            await ReplyAsync(result);
         }
 
-        private async Task ReplyAndDeleteAsync(string message)
+        private async Task ReplyAsync(string message)
         {
             await ReplyAsync($"{Format.Bold(Context.User.Username)}: {message}", allowedMentions: AllowedMentions.None);
             await Context.Message.DeleteAsync();
