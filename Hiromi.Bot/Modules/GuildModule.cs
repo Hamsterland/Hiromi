@@ -30,8 +30,8 @@ namespace Hiromi.Bot.Modules
                 x => x.GuildId == Context.Guild.Id);
             
             var channelTotal = await _guildStatsService.GetMostMessageCountByChannelAsync(
-                Context.Guild.Id, 
-                TimeSpan.FromDays(7));
+                TimeSpan.FromDays(7),
+                Context.Guild.Id);
             
             var embed = GuildStatsViews.FormatGuildInformation(Context.Guild, weekTotal, monthTotal, channelTotal);
             await ReplyAsync(embed: embed);

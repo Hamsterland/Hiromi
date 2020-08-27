@@ -28,7 +28,7 @@ namespace Hiromi.Services.Stats
             return messages.Count(x => x.TimeSent >= DateTime.Now.Date.Subtract(span));
         }
 
-        public async Task<IReadOnlyDictionary<ulong, int>> GetMostMessageCountByChannelAsync(ulong guildId, TimeSpan span)
+        public async Task<IReadOnlyDictionary<ulong, int>> GetMostMessageCountByChannelAsync(TimeSpan span, ulong guildId)
         {
             var messages = await _hiromiContext
                 .Messages
