@@ -1,8 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Hiromi.Services.Commands;
+using Hiromi.Data;
 using Hiromi.Services.Notifications;
 using Hiromi.Services.Tags;
 using MediatR;
@@ -12,17 +13,15 @@ namespace Hiromi.Services.Listeners.Messages
     public class MessageTagListener : INotificationHandler<MessageReceivedNotification>
     {
         private readonly ITagService _tagService;
-        private readonly ICommandStoreService _commandStoreService;
+        private readonly HiromiContext _hiromiContext;
 
-        public MessageTagListener(
-            ITagService tagService, 
-            ICommandStoreService commandStoreService)
+        public MessageTagListener(ITagService tagService, HiromiContext hiromiContext)
         {
             _tagService = tagService;
-            _commandStoreService = commandStoreService;
+            _hiromiContext = hiromiContext;
         }
     
-        private readonly Regex _inlineTagRegex = new Regex(@"^\$([\s\S]*)",
+        private readonly Regex _inlineTagRegex = new Regex(@"^\$([\s\S]*)", 
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         public async Task Handle(MessageReceivedNotification notification, CancellationToken cancellationToken)
@@ -35,21 +34,13 @@ namespace Hiromi.Services.Listeners.Messages
                 return;
             }
 
-            var enabledCommands = _commandStoreService.GetEnabledCommands(channel.Id);
+            var guild = await _hiromiContext
+                .Guilds
+                .FirstOrDefaultAsync(x => x.GuildId == channel.GuildId, cancellationToken);
 
-            if (enabledCommands is null)
+            if (guild is null || !guild.AllowTags)
             {
                 return;
-            }
-            
-            if (!enabledCommands.Contains("tag"))
-            {
-                return;
-            }
-
-            if (message.Content.Length <= 1)
-            {
-                return; 
             }
             
             var match = _inlineTagRegex.Match(message.Content);

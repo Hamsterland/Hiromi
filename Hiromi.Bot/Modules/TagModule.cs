@@ -23,6 +23,22 @@ namespace Hiromi.Bot.Modules
             _tagService = tagService;
         }
 
+        [Command("tags enable")]
+        [Summary("Enables tags in the Guild")]
+        public async Task Enable()
+        {
+            await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, true);
+            await ReplyAsync("Enabled Tags.");
+        }
+        
+        [Command("tags disable")]
+        [Summary("Enables tags in the Guild")]
+        public async Task Disable()
+        {
+            await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, false);
+            await ReplyAsync("Disabled Tags.");
+        }
+
         [Command("tag")]
         [Summary("Invokes a tag")]
         public async Task Tag(string name)

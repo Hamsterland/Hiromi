@@ -58,10 +58,5 @@ namespace Hiromi.Bot.Modules
             await _reminderService.DeleteReminderAsync(reminder.Id);
             await ReplyAsync($"{Context.User.Mention} Deleted reminder with Id {reminder.Id}.");
         }
-
-        private async Task ReplyNotFound(int id)
-        {
-            await ReplyAsync($"{Context.User.Mention} You do not have an active reminder with Id {id}.");
-        }
     }
 }

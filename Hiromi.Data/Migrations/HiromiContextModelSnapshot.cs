@@ -48,6 +48,30 @@ namespace Hiromi.Data.Migrations
                     b.ToTable("Channels");
                 });
 
+            modelBuilder.Entity("Hiromi.Data.Models.Guild", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("AllowQuotes")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("AllowTags")
+                        .HasColumnType("boolean");
+
+                    b.Property<long>("GuildId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildId")
+                        .IsUnique();
+
+                    b.ToTable("Guilds");
+                });
+
             modelBuilder.Entity("Hiromi.Data.Models.Message", b =>
                 {
                     b.Property<int>("Id")
@@ -63,9 +87,6 @@ namespace Hiromi.Data.Migrations
 
                     b.Property<long>("MessageId")
                         .HasColumnType("bigint");
-
-                    b.Property<DateTime>("TimeSent")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");

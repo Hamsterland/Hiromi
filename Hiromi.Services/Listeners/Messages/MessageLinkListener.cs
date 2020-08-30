@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Hiromi.Data;
+using Hiromi.Data.Models;
 using Hiromi.Services.Notifications;
 using MediatR;
 
@@ -15,10 +17,12 @@ namespace Hiromi.Listeners
     public class MessageLinkListener : INotificationHandler<MessageReceivedNotification>
     {
         private readonly DiscordSocketClient _discordSocketClient;
+        private readonly HiromiContext _hiromiContext;
 
-        public MessageLinkListener(DiscordSocketClient discordSocketClient)
+        public MessageLinkListener(DiscordSocketClient discordSocketClient, HiromiContext hiromiContext)
         {
             _discordSocketClient = discordSocketClient;
+            _hiromiContext = hiromiContext;
         }
 
         private readonly Regex _messageLinkRegex = new Regex(
@@ -28,11 +32,35 @@ namespace Hiromi.Listeners
         public async Task Handle(MessageReceivedNotification notification, CancellationToken cancellationToken)
         {
             if (!(notification.Message is IUserMessage message)
-                || !(message.Author is IGuildUser user))
+                || !(message.Author is IGuildUser user)
+                || !(message.Channel is IGuildChannel currentChannel))
             {
                 return;
             }
 
+            var guildId = currentChannel.Guild.Id;
+
+            var guild = await _hiromiContext
+                .Guilds
+                .FirstOrDefaultAsync(x => x.GuildId == guildId, cancellationToken);
+
+            if (guild == null)
+            {
+                _hiromiContext.Add(new Guild
+                {
+                    GuildId = guildId,
+                    AllowTags = true,
+                    AllowQuotes = true
+                });
+
+                await _hiromiContext.SaveChangesAsync(cancellationToken);
+            }
+            
+            if (!guild.AllowQuotes)
+            {
+                return;
+            }
+            
             var matches = _messageLinkRegex.Matches(message.Content);
             foreach (Match match in matches)
             {
@@ -107,8 +135,7 @@ namespace Hiromi.Listeners
             
             builder
                 .AddField("Quoted by", $"{quoter.Mention} from {Format.Bold(GetJumpUrlForEmbed(message))}")
-                .WithAuthor(author =>
-                    author
+                .WithAuthor(author => author
                         .WithName($"{message.Author}")
                         .WithIconUrl(message.Author.GetAvatarUrl()));
 

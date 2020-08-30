@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Discord.WebSocket;
+using Hiromi.Services;
 using Hiromi.Services.Stats;
 
 namespace Hiromi.Bot.Modules
@@ -19,15 +21,17 @@ namespace Hiromi.Bot.Modules
         [Command("serverinfo")]
         [Alias("guildinfo")]
         [Summary("Shows Guild information")]
-        public async Task Info()
+        public async Task GuildInfo()
         {
             var weekTotal = await _guildStatsService.GetMessageCountAsync(
+                StatisticsSource.Guild,
                 TimeSpan.FromDays(7), 
-                x => x.GuildId == Context.Guild.Id);
+                Context.Guild.Id);
 
             var monthTotal = await _guildStatsService.GetMessageCountAsync(
+                StatisticsSource.Guild,
                 TimeSpan.FromDays(30), 
-                x => x.GuildId == Context.Guild.Id);
+                Context.Guild.Id);
             
             var channelTotal = await _guildStatsService.GetMostMessageCountByChannelAsync(
                 TimeSpan.FromDays(7),

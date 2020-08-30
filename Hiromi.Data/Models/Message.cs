@@ -24,7 +24,7 @@ namespace Hiromi.Data.Models
         public ulong GuildId { get; set; }
 
         [Required] 
-        public DateTime TimeSent { get; set; } = DateTime.Now;
+        public DateTime TimeSent { get; } = DateTime.Now;
     }
 
     public class MessageConfiguration : IEntityTypeConfiguration<Message>
