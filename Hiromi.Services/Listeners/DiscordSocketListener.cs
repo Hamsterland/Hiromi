@@ -26,6 +26,7 @@ namespace Hiromi.Services.Listeners
         {
             _discordSocketClient.MessageReceived += MessageReceived;
             _discordSocketClient.MessageDeleted += MessageDeleted;
+            _discordSocketClient.JoinedGuild += JoinedGuild;
             
             _discordSocketClient.Log += Log;
             
@@ -36,7 +37,8 @@ namespace Hiromi.Services.Listeners
         {
             _discordSocketClient.MessageReceived -= MessageReceived;
             _discordSocketClient.MessageDeleted -= MessageDeleted;
-            
+            _discordSocketClient.JoinedGuild -= JoinedGuild;
+
             _discordSocketClient.Log -= Log;
             
             return Task.CompletedTask;
@@ -50,6 +52,11 @@ namespace Hiromi.Services.Listeners
         private async Task MessageDeleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
         {
             await _mediator.Publish(new MessageDeletedNotification(message, channel));
+        }
+        
+        private async Task JoinedGuild(SocketGuild guild)
+        {
+            await _mediator.Publish(new JoinedGuildNotification(guild));
         }
         
         private async Task Log(LogMessage logMessage)
