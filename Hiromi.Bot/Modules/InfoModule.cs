@@ -9,7 +9,7 @@ using Hiromi.Services.Stats;
 
 namespace Hiromi.Bot.Modules
 {
-    [Name("Info Information")]
+    [Name("Information")]
     [Summary("Some interesting information")]
     public class InfoModule : ModuleBase<SocketCommandContext>
     {
