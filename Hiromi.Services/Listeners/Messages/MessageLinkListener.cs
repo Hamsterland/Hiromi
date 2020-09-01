@@ -44,7 +44,7 @@ namespace Hiromi.Listeners
                 .Guilds
                 .FirstOrDefaultAsync(x => x.GuildId == guildId, cancellationToken);
 
-            if (guild == null)
+            if (guild is null)
             {
                 _hiromiContext.Add(new Guild
                 {
@@ -55,12 +55,12 @@ namespace Hiromi.Listeners
 
                 await _hiromiContext.SaveChangesAsync(cancellationToken);
             }
-            
-            if (!guild.AllowQuotes)
+
+            if (guild != null && !guild.AllowTags)
             {
                 return;
             }
-            
+
             var matches = _messageLinkRegex.Matches(message.Content);
             foreach (Match match in matches)
             {

@@ -27,7 +27,7 @@ namespace Hiromi.Services.Tags
             _discordSocketClient = discordSocketClient;
         }
 
-        public async Task ModifyAllowTagsAsync(ulong guildId, bool allow)
+        public async Task ModifyAllowTagsAsync(ulong guildId, bool allowTags)
         {
             var guild = await _hiromiContext
                 .Guilds
@@ -39,13 +39,13 @@ namespace Hiromi.Services.Tags
                 _hiromiContext.Add(new Guild
                 {
                     GuildId = guildId,
-                    AllowTags = allow,
+                    AllowTags = allowTags,
                     AllowQuotes = true
                 });
             }
             else
             {
-                guild.AllowTags = allow;
+                guild.AllowTags = allowTags;
             }
             
             await _hiromiContext.SaveChangesAsync();

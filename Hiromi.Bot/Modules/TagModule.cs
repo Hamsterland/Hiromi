@@ -12,9 +12,7 @@ namespace Hiromi.Bot.Modules
 {
     [Name("Tag")]
     [Summary("For fast retrieval of text and memes")]
-    [RequireEnabledInChannel]
     public class TagModule : ModuleBase<SocketCommandContext>
-
     {
         private readonly ITagService _tagService;
 
@@ -41,6 +39,7 @@ namespace Hiromi.Bot.Modules
 
         [Command("tag")]
         [Summary("Invokes a tag")]
+        [RequireEnabledInChannel]
         public async Task Tag(string name)
         {
             await _tagService.InvokeTagAsync(Context.Guild.Id, Context.Channel.Id, name);
@@ -48,6 +47,7 @@ namespace Hiromi.Bot.Modules
         
         [Command("tag create")]
         [Summary("Creates a tag")]
+        [RequireEnabledInChannel]
         public async Task Create(string name, [Remainder] string content)
         {
             if (!TagUtilities.IsWithinNameLimit(name))
@@ -77,6 +77,7 @@ namespace Hiromi.Bot.Modules
 
         [Command("tag delete")]
         [Summary("Deletes a tag by Id")]
+        [RequireEnabledInChannel]
         public async Task Delete(string name)
         {
             if (!await _tagService.HasMaintenancePermissions(name, Context.User as IGuildUser))
@@ -92,6 +93,7 @@ namespace Hiromi.Bot.Modules
 
         [Command("tag transfer")]
         [Summary("Transfers ownership of a tag")]
+        [RequireEnabledInChannel]
         public async Task Transfer(string name, IGuildUser user)
         {
             if (!await _tagService.HasMaintenancePermissions(name, Context.User as IGuildUser))
@@ -106,6 +108,7 @@ namespace Hiromi.Bot.Modules
 
         [Command("tag info")]
         [Summary("Provides tag information")]
+        [RequireEnabledInChannel]
         public async Task Info(string name)
         {
             var tag = await _tagService.GetTagSummaryAsync(Context.Guild.Id, name);
@@ -125,6 +128,7 @@ namespace Hiromi.Bot.Modules
 
         [Command("tags")]
         [Summary("Lists a user's tags")]
+        [RequireEnabledInChannel]
         public async Task Tags(IGuildUser user = null)
         {
             user ??= Context.User as IGuildUser;

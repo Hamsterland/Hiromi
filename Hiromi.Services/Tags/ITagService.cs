@@ -10,7 +10,7 @@ namespace Hiromi.Services.Tags
 {
     public interface ITagService
     {
-        Task ModifyAllowTagsAsync(ulong guildId, bool allow);
+        Task ModifyAllowTagsAsync(ulong guildId, bool allowTags);
         Task InvokeTagAsync(ulong guildId, ulong channelId, string name);
         Task CreateTagAsync(ulong guildId, ulong authorId, string name, string content);
         Task ModifyTagAsync(ulong guildId, string name, Action<Tag> action);
