@@ -23,16 +23,28 @@ namespace Hiromi.Services.Stats
         /// The number of messages sent.
         /// </returns>
         Task<int> GetMessageCountAsync(StatisticsSource source, TimeSpan span, ulong guildId, ulong userId = 0);
-        
+
         /// <summary>
-        /// Retrieves the Id and message count from the most active channel in a Guild from a given <see cref="TimeSpan"/>
-        /// compared tot he current time.
+        /// Retrieves the Id and message count from the most active channel in a Guild or from a user from a
+        /// given <see cref="TimeSpan"/> compared tot he current time.
         /// </summary>
+        /// <param name="source">The statistics source.</param>
         /// <param name="span">The time duration to take the activity from.</param>
         /// <param name="guildId">The Guild Id.</param>
+        /// <param name="userId"></param>
         /// <returns>
-        /// The Id of the most active channel and the number of messages sent.
+        /// The Id and message count of the most active channel in a Guild or from a user.
         /// </returns>
-        Task<IReadOnlyDictionary<ulong, int>> GetMostMessageCountByChannelAsync(TimeSpan span, ulong guildId);
+        Task<(ulong, int)> GetMostActiveChannelAndMessageCountAsync(StatisticsSource source, TimeSpan span, ulong guildId, ulong userId = 0);
+
+        /// <summary>
+        /// Retrieves information about the last message sent by a user.
+        /// </summary>
+        /// <param name="guildId">The Guild Id.</param>
+        /// <param name="userId">The user Id.</param>
+        /// <returns>
+        /// The last message sent.
+        /// </returns>
+        Task<MessageSummary> GetLastMessageFromUserAsync(ulong guildId, ulong userId);
     }
 }

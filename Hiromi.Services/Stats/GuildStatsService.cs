@@ -53,20 +53,59 @@ namespace Hiromi.Services.Stats
         }
 
         /// <inheritdoc/> 
-        public async Task<IReadOnlyDictionary<ulong, int>> GetMostMessageCountByChannelAsync(TimeSpan span, ulong guildId)
+        public async Task<(ulong, int)> GetMostActiveChannelAndMessageCountAsync(StatisticsSource source, TimeSpan span, ulong guildId, ulong userId = 0)
         {
-            var messages = await _hiromiContext
+            var messages = new List<MessageSummary>();
+            
+            switch (source)
+            {
+                case StatisticsSource.Guild:
+                {
+                    messages = await _hiromiContext
+                        .Messages
+                        .Where(x => x.GuildId == guildId)
+                        .Select(MessageSummary.FromEntityProjection)
+                        .ToListAsync();
+
+                    break;
+                }
+                case StatisticsSource.User:
+                {
+                    messages = await _hiromiContext
+                        .Messages
+                        .Where(x => x.GuildId == guildId)
+                        .Where(x => x.UserId == userId)
+                        .Select(MessageSummary.FromEntityProjection)
+                        .ToListAsync();
+
+                    break;
+                }
+            }
+
+            var earlist = DateTime.Now.Subtract(span);
+            var filtered = messages.Where(x => x.TimeSent > earlist);
+            
+            var final = new List<ulong>();
+            final.AddRange(filtered.Select(x => x.ChannelId));
+
+            var (channelId, count) = final
+                .GroupBy(x => x)
+                .ToDictionary(x => x.Key, x => x.Count())
+                .OrderByDescending(x => x.Value)
+                .FirstOrDefault();
+
+            return (channelId, count);
+        }
+
+        /// <inheritdoc/> 
+        public async Task<MessageSummary> GetLastMessageFromUserAsync(ulong guildId, ulong userId)
+        {
+            return await _hiromiContext
                 .Messages
                 .Where(x => x.GuildId == guildId)
-                .ToListAsync();
-
-            var filtered = messages
-                .Where(x => x.TimeSent >= DateTime.Now.Date.Subtract(span))
-                .Select(x => x.ChannelId);
-            
-            return filtered
-                .GroupBy(x => x)
-                .ToDictionary(x => x.Key, x => x.Count());
+                .Where(x => x.UserId == userId)
+                .Select(MessageSummary.FromEntityProjection)
+                .FirstOrDefaultAsync();
         }
     }
 }

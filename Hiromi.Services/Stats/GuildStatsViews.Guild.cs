@@ -26,7 +26,7 @@ namespace Hiromi.Services.Stats
             SocketGuild guild,
             int weekTotal, 
             int monthTotal,
-            IReadOnlyDictionary<ulong, int> channelTotal)
+            (ulong, int) channelTotal)
         {
             var builder = new StringBuilder();
             

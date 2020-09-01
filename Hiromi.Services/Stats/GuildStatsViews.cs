@@ -3,13 +3,14 @@ using System.Linq;
 using System.Text;
 using Discord;
 using Humanizer;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace Hiromi.Services.Stats
 {
     /// <summary>
     /// Embed view models to display statistics data.
     /// </summary>
-    public partial class GuildStatsViews
+    public static partial class GuildStatsViews
     {
         /// <summary>
         /// Appends message statistics to a <see cref="StringBuilder"/>.
@@ -25,17 +26,15 @@ namespace Hiromi.Services.Stats
             StringBuilder builder,
             int weekTotal, 
             int monthTotal,
-            IReadOnlyDictionary<ulong, int> channelTotal)
+            (ulong, int) channelTotal)
         {
             var weekTotalInfo = "message".ToQuantity(weekTotal, "n0");
             var monthTotalInfo = "message".ToQuantity(monthTotal, "n0");
             var average = "message".ToQuantity(monthTotal / 30, "n0");
-            
-            var (key, total) = channelTotal
-                .OrderByDescending(x => x.Value)
-                .FirstOrDefault();
 
-            var channel = MentionUtils.MentionChannel(key);
+            var (channelId, total) = channelTotal;
+
+            var channel = MentionUtils.MentionChannel(channelId);
             var channelTotalInfo = $"{channel} ({"message".ToQuantity(total, "n0")})";
 
             builder
