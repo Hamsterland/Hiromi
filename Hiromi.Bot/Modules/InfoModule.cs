@@ -67,7 +67,7 @@ namespace Hiromi.Bot.Modules
                 Context.Guild.Id,
                 Context.User.Id);
 
-            var lastMessage = await _guildStatsService.GetLastMessageFromUserAsync(Context.Guild.Id, Context.User.Id);
+            var lastMessage = await _guildStatsService.GetSecondLastMessageFromUserAsync(Context.Guild.Id, Context.User.Id);
 
             var embed = GuildStatsViews.FormatUserInformation(
                 Context.User as SocketGuildUser,

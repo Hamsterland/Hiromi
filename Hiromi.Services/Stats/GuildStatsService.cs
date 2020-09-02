@@ -98,14 +98,16 @@ namespace Hiromi.Services.Stats
         }
 
         /// <inheritdoc/> 
-        public async Task<MessageSummary> GetLastMessageFromUserAsync(ulong guildId, ulong userId)
+        public async Task<MessageSummary> GetSecondLastMessageFromUserAsync(ulong guildId, ulong userId)
         {
-            return await _hiromiContext
+            var messages = await _hiromiContext
                 .Messages
                 .Where(x => x.GuildId == guildId)
                 .Where(x => x.UserId == userId)
                 .Select(MessageSummary.FromEntityProjection)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
+
+            return messages[^1];
         }
     }
 }

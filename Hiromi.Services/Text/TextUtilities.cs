@@ -38,7 +38,7 @@ namespace Hiromi.Services.Text
                     _ => $"{text[i]}"
                 };
 
-                builder.AppendLine(append);
+                builder.Append(append);
             }
 
             return builder.ToString();

@@ -9,7 +9,6 @@ using Hiromi.Data;
 using Hiromi.Data.Models;
 using Hiromi.Data.Models.Tags;
 using Hiromi.Services.Tags.Exceptions;
-using Humanizer;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hiromi.Services.Tags
@@ -25,30 +24,6 @@ namespace Hiromi.Services.Tags
         {
             _hiromiContext = hiromiContext;
             _discordSocketClient = discordSocketClient;
-        }
-
-        public async Task ModifyAllowTagsAsync(ulong guildId, bool allowTags)
-        {
-            var guild = await _hiromiContext
-                .Guilds
-                .Where(x => x.GuildId == guildId)
-                .FirstOrDefaultAsync();
-
-            if (guild is null)
-            {
-                _hiromiContext.Add(new Guild
-                {
-                    GuildId = guildId,
-                    AllowTags = allowTags,
-                    AllowQuotes = true
-                });
-            }
-            else
-            {
-                guild.AllowTags = allowTags;
-            }
-            
-            await _hiromiContext.SaveChangesAsync();
         }
         
         public async Task InvokeTagAsync(ulong guildId, ulong channelId, string name)
@@ -162,6 +137,30 @@ namespace Hiromi.Services.Tags
                 .FirstOrDefaultAsync();
             
             return tag.OwnerId == user.Id || user.GuildPermissions.ManageMessages;
+        }
+        
+        public async Task ModifyAllowTagsAsync(ulong guildId, bool allowTags)
+        {
+            var guild = await _hiromiContext
+                .Guilds
+                .Where(x => x.GuildId == guildId)
+                .FirstOrDefaultAsync();
+
+            if (guild is null)
+            {
+                _hiromiContext.Add(new Guild
+                {
+                    GuildId = guildId,
+                    AllowTags = allowTags,
+                    AllowQuotes = true
+                });
+            }
+            else
+            {
+                guild.AllowTags = allowTags;
+            }
+            
+            await _hiromiContext.SaveChangesAsync();
         }
     }
 }

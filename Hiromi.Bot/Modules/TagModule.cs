@@ -1,10 +1,7 @@
-﻿using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
-using Hiromi.Services;
 using Hiromi.Services.Tags.Exceptions;
 using Hiromi.Services.Tags;
 

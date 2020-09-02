@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Hiromi.Data.Models;
 
 namespace Hiromi.Services.Stats
 {
     /// <summary>
-    /// Describes a service that performs Guild statistic operations.
+    /// Describes a service that performs statistical operations within a Guild.
     /// </summary>
     public interface IGuildStatsService
     {
@@ -26,7 +24,7 @@ namespace Hiromi.Services.Stats
 
         /// <summary>
         /// Retrieves the Id and message count from the most active channel in a Guild or from a user from a
-        /// given <see cref="TimeSpan"/> compared tot he current time.
+        /// given <see cref="TimeSpan"/> compared to the current time.
         /// </summary>
         /// <param name="source">The statistics source.</param>
         /// <param name="span">The time duration to take the activity from.</param>
@@ -38,13 +36,13 @@ namespace Hiromi.Services.Stats
         Task<(ulong, int)> GetMostActiveChannelAndMessageCountAsync(StatisticsSource source, TimeSpan span, ulong guildId, ulong userId = 0);
 
         /// <summary>
-        /// Retrieves information about the last message sent by a user.
+        /// Retrieves information about the second-last message sent by a user.
         /// </summary>
         /// <param name="guildId">The Guild Id.</param>
         /// <param name="userId">The user Id.</param>
         /// <returns>
-        /// The last message sent.
+        /// The second-last message sent.
         /// </returns>
-        Task<MessageSummary> GetLastMessageFromUserAsync(ulong guildId, ulong userId);
+        Task<MessageSummary> GetSecondLastMessageFromUserAsync(ulong guildId, ulong userId);
     }
 }

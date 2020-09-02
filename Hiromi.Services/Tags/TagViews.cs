@@ -47,7 +47,8 @@ namespace Hiromi.Services.Tags
                 .WithColor(Constants.DefaultEmbedColour);
 
             var matchesList = matches.ToList();
-            if (matchesList.Any())
+            
+            if (matchesList.Count > 0)
             {
                 var builder = new StringBuilder()
                     .AppendLine($"No tag called \"{name}\" found. Did you mean?")
