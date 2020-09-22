@@ -20,6 +20,7 @@ namespace Hiromi.Bot.Modules
 
         [Command("tags enable")]
         [Summary("Enables tags in the Guild")]
+        [RequireDeveloperOrPermission(GuildPermission.Administrator)]
         public async Task Enable()
         {
             await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, true);
@@ -28,6 +29,7 @@ namespace Hiromi.Bot.Modules
         
         [Command("tags disable")]
         [Summary("Enables tags in the Guild")]
+        [RequireDeveloperOrPermission(GuildPermission.Administrator)]
         public async Task Disable()
         {
             await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, false);

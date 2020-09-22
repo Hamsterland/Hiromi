@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Hiromi.Services.Notifications;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Hiromi.Services.Listeners.Messages
 {
@@ -44,7 +45,8 @@ namespace Hiromi.Services.Listeners.Messages
             if (message.HasStringPrefix(prefix, ref argPos))
             {
                 var context = new SocketCommandContext(_discordSocketClient, message);
-                await _commandService.ExecuteAsync(context, argPos, _serviceProvider);
+                using var scope = _serviceProvider.CreateScope();
+                await _commandService.ExecuteAsync(context, argPos, scope.ServiceProvider);
             }
         }
     }

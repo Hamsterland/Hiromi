@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
 using Hiromi.Services;
+using Hiromi.Services.Attributes;
 using Hiromi.Services.Commands;
 
 namespace Hiromi.Bot.Modules
@@ -11,6 +12,7 @@ namespace Hiromi.Bot.Modules
     [Summary("Handles channel configuration")]
     [Remarks("To be merged with the LogChannel module")]
     [RequireDeveloperOrPermission(GuildPermission.ManageChannels)]
+    [HelpDisplay(HelpDisplayOptions.Hide)]
     public class ChannelModule : ModuleBase<SocketCommandContext>
     {
         private readonly ICommandToggleService _commandToggleService;

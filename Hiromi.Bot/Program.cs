@@ -10,6 +10,7 @@ using Hiromi.Data;
 using Hiromi.Data.Models;
 using Hiromi.Services.Commands;
 using Hiromi.Services.Core;
+using Hiromi.Services.Google;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Listeners.Log;
 using Hiromi.Services.Reminders;
@@ -32,7 +33,7 @@ namespace Hiromi.Bot
             {
                 configuration
                     .Enrich.FromLogContext()
-                    .MinimumLevel.Information()
+                    .MinimumLevel.Verbose()
                     .WriteTo.Console(theme: SystemConsoleTheme.Literate);
             })
             .ConfigureAppConfiguration((context, builder) =>
@@ -52,7 +53,7 @@ namespace Hiromi.Bot
                     GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMessages |
                                      GatewayIntents.GuildMessageReactions | GatewayIntents.GuildPresences,
                     
-                    LogLevel = LogSeverity.Verbose
+                    LogLevel = LogSeverity.Info
                 });
                 
                 var commandService = new CommandService(new CommandServiceConfig
@@ -80,10 +81,11 @@ namespace Hiromi.Bot
                     .AddSingleton<DiscordLogListener>()
                     .AddSingleton<InteractiveService>()
                     .AddSingleton<ICommandStoreService, CommandStoreService>()
-                    .AddSingleton<ICommandToggleService, CommandToggleService>()
-                    .AddSingleton<ITagService, TagService>()
-                    .AddSingleton<IReminderService, ReminderService>()
-                    .AddSingleton<IGuildStatsService, GuildStatsService>();
+                    .AddScoped<ICommandToggleService, CommandToggleService>()
+                    .AddScoped<ITagService, TagService>()
+                    .AddScoped<IReminderService, ReminderService>()
+                    .AddScoped<IGuildStatsService, GuildStatsService>() 
+                    .AddScoped<IGoogleService, GoogleService>();
             })
             .RunConsoleAsync();
     }

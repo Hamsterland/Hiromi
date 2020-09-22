@@ -35,7 +35,13 @@ namespace Hiromi.Services.Core
         
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var token = _configuration["Discord:Token"];
+            string token;
+            
+#if DEBUG
+            token = _configuration["Discord:Tokens:Development"];
+#else
+            token = _configuration["Discord:Tokens:Production"];
+#endif
 
             if (string.IsNullOrWhiteSpace(token))
             {

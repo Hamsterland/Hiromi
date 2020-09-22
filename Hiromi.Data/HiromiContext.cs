@@ -16,6 +16,8 @@ namespace Hiromi.Data
         public DbSet<Message> Messages { get; set; }
 
         public DbSet<Guild> Guilds { get; set; }
+
+        public DbSet<WelcomeResponse> WelcomeResponses { get; set; }
         
         public HiromiContext(DbContextOptions options) : base(options)
         { }

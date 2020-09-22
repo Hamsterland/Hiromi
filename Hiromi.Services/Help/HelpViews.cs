@@ -8,7 +8,7 @@ namespace Hiromi.Services.Help
 {
     public static class HelpViews
     {
-        private const int HELP_EMBED_SECONDS_TIMEOUT = 60;
+        private const int Timeout = 60;
         
         public static PaginatedMessage FormatHelp(IEnumerable<ModuleInfo> modules)
         {
@@ -23,7 +23,7 @@ namespace Hiromi.Services.Help
             return new PaginatedMessage
             {
                 Pages = pages,
-                Options = new PaginatedAppearanceOptions { Timeout = TimeSpan.FromSeconds(HELP_EMBED_SECONDS_TIMEOUT) }
+                Options = new PaginatedAppearanceOptions { Timeout = TimeSpan.FromSeconds(Timeout) }
             };
         }
 
@@ -37,7 +37,7 @@ namespace Hiromi.Services.Help
             return new PaginatedMessage
             {
                 Pages = pages,
-                Options = new PaginatedAppearanceOptions { Timeout = TimeSpan.FromSeconds(HELP_EMBED_SECONDS_TIMEOUT) }
+                Options = new PaginatedAppearanceOptions { Timeout = TimeSpan.FromSeconds(Timeout) }
             };
         }
 

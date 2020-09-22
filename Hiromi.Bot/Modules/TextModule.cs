@@ -34,7 +34,7 @@ namespace Hiromi.Bot.Modules
             await Context.Message.DeleteAsync();
         }
         
-        [HelpIgnore]
+        [HelpDisplay(HelpDisplayOptions.Hide)]
         [RequireDeveloper]
         [Command("status")]
         [Summary("Sets Hiromi's status")]

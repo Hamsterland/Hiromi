@@ -13,9 +13,15 @@ namespace Hiromi.Services.Help
     {
         public static void AddHelpPages(ModuleInfo module, IEnumerable<EmbedFieldBuilder> fields, ref List<EmbedPage> pages)
         {
-            if (module.Attributes.Any(x => x is HelpIgnore))
+            foreach (var attr in module.Attributes)
             {
-                return;
+                if (attr is HelpDisplay helpDisplay)
+                {
+                    if (helpDisplay.Option is HelpDisplayOptions.Hide)
+                    {
+                        return; 
+                    }
+                }
             }
             
             pages
@@ -38,7 +44,7 @@ namespace Hiromi.Services.Help
         public static IEnumerable<EmbedFieldBuilder> GetCommandUsagesFromModule(ModuleInfo module)
         {
             var fields = (from command in module.Commands
-                where !command.Attributes.Any(x => x is HelpIgnore)
+                where !command.Attributes.Any(x => x is HelpDisplay)
                 select new EmbedFieldBuilder()
                     .WithName(GetCommandUsage(command))
                     .WithValue(command.Summary!))
