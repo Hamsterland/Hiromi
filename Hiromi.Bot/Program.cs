@@ -10,7 +10,7 @@ using Hiromi.Data;
 using Hiromi.Data.Models;
 using Hiromi.Services.Commands;
 using Hiromi.Services.Core;
-using Hiromi.Services.Google;
+using Hiromi.Services.Tracker;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Listeners.Log;
 using Hiromi.Services.Reminders;
@@ -85,7 +85,7 @@ namespace Hiromi.Bot
                     .AddScoped<ITagService, TagService>()
                     .AddScoped<IReminderService, ReminderService>()
                     .AddScoped<IGuildStatsService, GuildStatsService>() 
-                    .AddScoped<IGoogleService, GoogleService>();
+                    .AddScoped<ITrackerService, TrackerService>();
             })
             .RunConsoleAsync();
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Hiromi.Services.Google
+namespace Hiromi.Services.Tracker
 {
     public class Tracker
     {
