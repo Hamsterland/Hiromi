@@ -69,26 +69,13 @@ namespace Hiromi.Services.Google
         
         public async Task<Tracker> GetTrackerAsync()
         {
-            UserCredential credential;
-
-            await using (var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
-            {
-                const string credPath = "token.json";
-                
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    Scopes,
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
-                
-                Console.WriteLine("Credential file saved to: " + credPath);
-            }
+            await using var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read);
+            var credential = GoogleCredential.FromStream(stream).CreateScoped();
             
-            var service = new SheetsService(new BaseClientService.Initializer()
+            var service = new SheetsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
-                ApplicationName = ApplicationName,
+                ApplicationName = "Hiromi"
             });
             
             const string spreadsheetId = "1wbIqigHMGFWZebum8mQjSL5eQzSAXuWZS-8ewbFX4PI";
