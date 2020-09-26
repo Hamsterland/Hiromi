@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
+using Newtonsoft.Json.Serialization;
 
 namespace Hiromi.Services.Tracker
 {
@@ -145,14 +148,24 @@ namespace Hiromi.Services.Tracker
             const string inProgress = "Synopses In Progress";
             const string archive = "Archive";
             
+            var formulaRenderOption = SpreadsheetsResource.ValuesResource.GetRequest.ValueRenderOptionEnum.FORMULA;
+            var dateRenderOption = SpreadsheetsResource.ValuesResource.GetRequest.DateTimeRenderOptionEnum.FORMATTEDSTRING;
+            
             var progressRequest = service.Spreadsheets.Values.Get(spreadsheetId, inProgress);
+            progressRequest.ValueRenderOption = formulaRenderOption;
+            progressRequest.DateTimeRenderOption = dateRenderOption;
+
             var progressResponse = await progressRequest.ExecuteAsync();
             var progressValues = progressResponse.Values;
 
             var archiveRequest = service.Spreadsheets.Values.Get(spreadsheetId, archive);
+            archiveRequest.ValueRenderOption = formulaRenderOption;
+            archiveRequest.DateTimeRenderOption = dateRenderOption;
+            
             var archiveResponse = await archiveRequest.ExecuteAsync();
             var archiveValues = archiveResponse.Values;
 
+            
             return new Tracker(progressValues, archiveValues);
         }
     }
