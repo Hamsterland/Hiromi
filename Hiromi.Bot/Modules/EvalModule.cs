@@ -39,7 +39,7 @@ namespace Hiromi.Bot.Modules
                     .WithUserAsAuthor(Context.User)
                     .WithColor(Color.Green)
                     .AddField("Code", $"```cs\n{code}\n```")
-                    .AddField("Result", $"{result.Result}")
+                    .AddField("Result", $"```\n{result.Result}\n```")
                     .Build();
 
                 await message.ModifyAsync(x =>
