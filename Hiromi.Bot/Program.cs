@@ -10,6 +10,7 @@ using Hiromi.Data;
 using Hiromi.Data.Models;
 using Hiromi.Services.Commands;
 using Hiromi.Services.Core;
+using Hiromi.Services.Eval;
 using Hiromi.Services.Tracker;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Listeners.Log;
@@ -84,8 +85,9 @@ namespace Hiromi.Bot
                     .AddScoped<ICommandToggleService, CommandToggleService>()
                     .AddScoped<ITagService, TagService>()
                     .AddScoped<IReminderService, ReminderService>()
-                    .AddScoped<IGuildStatsService, GuildStatsService>() 
-                    .AddScoped<ITrackerService, TrackerService>();
+                    .AddScoped<IGuildStatsService, GuildStatsService>()
+                    .AddScoped<ITrackerService, TrackerService>()
+                    .AddScoped<IEvalService, EvalService>();
             })
             .RunConsoleAsync();
     }

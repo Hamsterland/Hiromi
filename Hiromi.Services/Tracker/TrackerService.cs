@@ -154,17 +154,16 @@ namespace Hiromi.Services.Tracker
             var progressRequest = service.Spreadsheets.Values.Get(spreadsheetId, inProgress);
             progressRequest.ValueRenderOption = formulaRenderOption;
             progressRequest.DateTimeRenderOption = dateRenderOption;
-
+            
             var progressResponse = await progressRequest.ExecuteAsync();
             var progressValues = progressResponse.Values;
-
+            
             var archiveRequest = service.Spreadsheets.Values.Get(spreadsheetId, archive);
             archiveRequest.ValueRenderOption = formulaRenderOption;
             archiveRequest.DateTimeRenderOption = dateRenderOption;
             
             var archiveResponse = await archiveRequest.ExecuteAsync();
             var archiveValues = archiveResponse.Values;
-
             
             return new Tracker(progressValues, archiveValues);
         }
