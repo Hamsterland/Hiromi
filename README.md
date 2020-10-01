@@ -3,15 +3,15 @@
 </p>
 
 # Hiromi
-A Discord bot.
+A Discord bot for the MAL Rewrite [Discord server](https://myanimelist.net/clubs.php?cid=6498).
 
 |**Prefix**: -|**Lead:** [@Hamsterland](https://github.com/Hamsterland)|**Lang:** C#|**Library:** [Discord.Net](https://github.com/discord-net/Discord.Net)|**Runtime**: .NET Core 3.1
 |---|---|---|---|---|
 ## Features
 * Tags
 * Auto-quote 
-* Logging (WIP)
-* Reminders (WIP)
+* Reminders
+* Tracker stats
 
 ## Roadmap
 * Complete WIP (lol)
