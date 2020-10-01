@@ -14,8 +14,8 @@ A Discord bot for the MAL Rewrite [Discord server](https://myanimelist.net/clubs
 * Tracker stats
 
 ## Roadmap
-* Complete WIP (lol)
 * Upgrade to .NET 5 Preview
+* Fix Welcome Messages
 
 ## Repository
 All contributions are welcome. Please don't feel the need to discuss, just make whatever contributions you want. However, do be aware of Hiromi's basic architecture.
