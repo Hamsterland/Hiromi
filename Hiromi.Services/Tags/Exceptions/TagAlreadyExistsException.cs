@@ -4,7 +4,7 @@ namespace Hiromi.Services.Tags.Exceptions
 {
     public class TagAlreadyExistsException : Exception
     {
-        public TagAlreadyExistsException(string message) : base(message)
+        public TagAlreadyExistsException(string message = null) : base(message)
         {
         }
     }

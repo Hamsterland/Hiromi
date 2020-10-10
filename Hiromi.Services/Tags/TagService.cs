@@ -74,7 +74,8 @@ namespace Hiromi.Services.Tags
             
             await _hiromiContext.SaveChangesAsync();
         }
-
+        
+        [Obsolete("Please don't use this.")]
         public async Task ModifyTagAsync(ulong guildId, string name, Action<Tag> action)
         {
             var tag = await _hiromiContext

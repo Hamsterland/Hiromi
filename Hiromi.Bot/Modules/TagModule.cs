@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Data;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
@@ -88,7 +89,7 @@ namespace Hiromi.Bot.Modules
             await _tagService.DeleteTagAsync(Context.Guild.Id, name);
             await ReplyAsync($"Deleted tag \"{name}\".");
         }
-
+        
 
         [Command("tag transfer")]
         [Summary("Transfers ownership of a tag")]

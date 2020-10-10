@@ -166,34 +166,6 @@ namespace Hiromi.Data.Migrations
 
                     b.ToTable("Tags");
                 });
-
-            modelBuilder.Entity("Hiromi.Data.Models.WelcomeResponse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<long>("ChannelId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("GuildId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChannelId")
-                        .IsUnique();
-
-                    b.HasIndex("GuildId")
-                        .IsUnique();
-
-                    b.ToTable("WelcomeResponses");
-                });
 #pragma warning restore 612, 618
         }
     }

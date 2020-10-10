@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Hiromi.Data</RootNamespace>
     <UserSecretsId>1866adaa-0f86-45a6-a753-b41f95bf57f8</UserSecretsId>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.3.0-dev-20200718.1" />

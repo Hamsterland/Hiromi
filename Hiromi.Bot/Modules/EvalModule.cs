@@ -10,7 +10,7 @@ namespace Hiromi.Bot.Modules
 {
     [Name("Evaluation")]
     [Summary("Evaluate C# Code")]
-    [RequireOwner]
+    [RequireDeveloper]
     public class EvalModule : ModuleBase<SocketCommandContext>
     {
         private readonly IEvalService _evalService;
