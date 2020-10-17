@@ -29,6 +29,7 @@ namespace Hiromi.Services.Stats
                 {
                     messages = await _hiromiContext
                         .Messages
+                        .AsNoTracking()
                         .Where(x => x.GuildId == guildId)
                         .Select(MessageSummary.FromEntityProjection)
                         .ToListAsync();
@@ -39,6 +40,7 @@ namespace Hiromi.Services.Stats
                 {
                     messages = await _hiromiContext
                         .Messages
+                        .AsNoTracking()
                         .Where(x => x.GuildId == guildId)
                         .Where(x => x.UserId == userId)
                         .Select(MessageSummary.FromEntityProjection)
@@ -63,6 +65,7 @@ namespace Hiromi.Services.Stats
                 {
                     messages = await _hiromiContext
                         .Messages
+                        .AsNoTracking()
                         .Where(x => x.GuildId == guildId)
                         .Select(MessageSummary.FromEntityProjection)
                         .ToListAsync();
@@ -73,6 +76,7 @@ namespace Hiromi.Services.Stats
                 {
                     messages = await _hiromiContext
                         .Messages
+                        .AsNoTracking()
                         .Where(x => x.GuildId == guildId)
                         .Where(x => x.UserId == userId)
                         .Select(MessageSummary.FromEntityProjection)
@@ -82,8 +86,8 @@ namespace Hiromi.Services.Stats
                 }
             }
 
-            var earlist = DateTime.Now.Subtract(span);
-            var filtered = messages.Where(x => x.TimeSent > earlist);
+            var earliest = DateTime.Now.Subtract(span);
+            var filtered = messages.Where(x => x.TimeSent > earliest);
             
             var final = new List<ulong>();
             final.AddRange(filtered.Select(x => x.ChannelId));
@@ -102,6 +106,7 @@ namespace Hiromi.Services.Stats
         {
             var messages = await _hiromiContext
                 .Messages
+                .AsNoTracking()
                 .Where(x => x.GuildId == guildId)
                 .Where(x => x.UserId == userId)
                 .Select(MessageSummary.FromEntityProjection)

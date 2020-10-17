@@ -51,10 +51,10 @@ namespace Hiromi.Services.Core
             
             try
             {
-                await _reminderService.CacheReminders();
                 await _commandStoreService.LoadEnabledCommands();
                 await _discordSocketClient.LoginAsync(TokenType.Bot, token);
                 await _discordSocketClient.StartAsync();
+                await _reminderService.CacheReminders();
             }
             catch (Exception e)
             {

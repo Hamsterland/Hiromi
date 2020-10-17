@@ -4,7 +4,7 @@ using Discord.Addons.Interactive;
 using Discord.Commands;
 using Hiromi.Services.Help;
 
-namespace Hiromi.Modules
+namespace Hiromi.Bot.Modules
 {
     [Name("Help")]
     [Summary("Ye old handbook")]
