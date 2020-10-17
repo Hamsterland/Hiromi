@@ -45,8 +45,7 @@ namespace Hiromi.Services.Listeners.Messages
             if (message.HasStringPrefix(prefix, ref argPos))
             {
                 var context = new SocketCommandContext(_discordSocketClient, message);
-                using var scope = _serviceProvider.CreateScope();
-                await _commandService.ExecuteAsync(context, argPos, scope.ServiceProvider);
+                await _commandService.ExecuteAsync(context, argPos, _serviceProvider);
             }
         }
     }

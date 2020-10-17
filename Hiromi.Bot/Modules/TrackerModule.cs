@@ -1,14 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Discord;
+using Discord.Addons.Interactive;
 using Discord.Commands;
+using Hiromi.Bot.Preconditions;
 using Hiromi.Services;
+using Hiromi.Services.Attributes;
 using Hiromi.Services.Tracker;
+using MoreLinq;
 
 namespace Hiromi.Bot.Modules
 {
     [Name("Tracker")]
-    [Summary("Rewrite activity stats")]
-    public class TrackerModule : ModuleBase<SocketCommandContext>
+    [Summary("Interact with the Tracker")]
+    [RequireDeveloper]
+    public class TrackerModule : InteractiveBase
     {
         private readonly ITrackerService _trackerService;
 
@@ -17,29 +26,69 @@ namespace Hiromi.Bot.Modules
             _trackerService = trackerService;
         }
 
-        [Command("trackerinfo")]
-        [Summary("Retrieves a user's activity")]
-        public async Task Activity(string username)
+        [Command("synopses", RunMode = RunMode.Async)]
+        [Summary("Shows current synopses.")]
+        public async Task Synopses(string username)
         {
-            var activity = await _trackerService.GetUserActivity(username);
+            var warning = await ReplyAsync($"{Context.User.Mention} I am querying the Tracker, this may take a moment.");
+            var synopses = await _trackerService.GetUserSynopses(username);
+            var pager = BuildSynopsesPager(synopses);
+            await warning.DeleteAsync();
+            await PagedReplyAsync(pager, new ReactionList());
+        }
 
-            var claims = $@"
-Anime: {activity.ClaimDistribution.Anime} ({activity.ClaimDistribution.AnimePercentage:F}%)
-Manga: {activity.ClaimDistribution.Manga} ({activity.ClaimDistribution.MangaPercentage:F}%)
-Novel: {activity.ClaimDistribution.Novel} ({activity.ClaimDistribution.NovelPercentage:F}%)
-";
+        private PaginatedMessage BuildSynopsesPager(List<Synopsis> synopses)
+        {
+            var pages = new List<EmbedPage>();
             
-            var embed = new EmbedBuilder()
-                .WithColor(Constants.DefaultEmbedColour)
-                .WithTitle($"{username}'s Activity")
-                .AddField("In Progress", $"Writes: {activity.ProgressActivity.Writes}\nEdits: {activity.ProgressActivity.Edits}", true)
-                .AddField("Archived", $"Writes: {activity.ArchiveActivity.Writes}\nEdits: {activity.ArchiveActivity.Edits}", true)
-                .AddField("Coordinator Edits", activity.ArchiveActivity.CoordinatorEdits, true)
-                .AddField("Total", $"Writes: {activity.TotalWrites}\nEdits: {activity.TotalEdits}", true)
-                .AddField("Written Claim Distribution", claims)
-                .Build();
+            pages
+                .AddRange(synopses
+                    .Batch(8)
+                    .Select(x =>
+                    {
+                        var fieldBuilders = new List<EmbedFieldBuilder>();
 
-            await ReplyAsync(embed: embed);
+                        foreach (var synopsis in x)
+                        {
+                            fieldBuilders.Add(new EmbedFieldBuilder
+                            {
+                                Name = "Claimed",
+                                Value = synopsis.DateClaimed,
+                                IsInline = true
+                            });
+
+                            fieldBuilders.Add(new EmbedFieldBuilder
+                            {
+                                Name = "Series",
+                                Value = $"[{synopsis.SeriesTitle}]({synopsis.Document})",
+                                IsInline = true
+                            });
+
+                            fieldBuilders.Add(new EmbedFieldBuilder
+                            {
+                                Name = "Type",
+                                Value = $"{synopsis.ClaimType}",
+                                IsInline = true
+                            });
+                        }
+
+                        return new EmbedPage
+                        {
+                            TotalFieldMessage = fieldBuilders.Count != 1 ? "Synopses" : "Synopsis",
+                            TotalFieldCountConstant = 1f / 3f,
+                            Fields = fieldBuilders,
+                            Color = Constants.DefaultEmbedColour
+                        };
+                    }));
+
+            return new PaginatedMessage
+            {
+                Author = new EmbedAuthorBuilder()
+                    .WithName(Context.User.ToString())
+                    .WithIconUrl(Context.User.GetAvatarUrl()),
+                
+                Pages = pages
+            };
         }
     }
 }

@@ -15,12 +15,12 @@ namespace Hiromi.Services.Help
         {
             foreach (var attr in module.Attributes)
             {
-                if (attr is HelpDisplay helpDisplay)
+                if (!(attr is HelpDisplay helpDisplay)) 
+                    continue;
+                
+                if (helpDisplay.Option is HelpDisplayOptions.Hide)
                 {
-                    if (helpDisplay.Option is HelpDisplayOptions.Hide)
-                    {
-                        return; 
-                    }
+                    return; 
                 }
             }
             

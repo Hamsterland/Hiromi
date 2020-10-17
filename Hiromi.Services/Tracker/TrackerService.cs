@@ -1,171 +1,117 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
-using Newtonsoft.Json.Serialization;
+using Google.Apis.Sheets.v4.Data;
 
 namespace Hiromi.Services.Tracker
 {
     public class TrackerService : ITrackerService
     {
-        private const string ApplicationName = "Hiromi";
-
-        public ClaimDistribution GetClaimDistribution(Tracker tracker, string username)
+        public async Task<List<Synopsis>> GetUserSynopses(string username)
         {
-            var anime = 0;
-            var manga = 0;
-            var novel = 0;
-
-            foreach (var row in tracker.Progress.Skip(1))
-            {
-                AppendClaimInformation(row); 
-            }
-            
-            foreach (var row in tracker.Archive.Skip(1))
-            {
-                AppendClaimInformation(row);
-            }
-
-            void AppendClaimInformation(IList<object> row)
-            {
-                if (row.Count > 1 && row[3].ToString().ToLower() == username)
-                {
-                    switch (row[2])
-                    {
-                        case "Anime":
-                        {
-                            anime++;
-                            break;
-                        }
-                        case "Manga":
-                        {
-                            manga++;
-                            break;
-                        }
-                        case "Novel":
-                        {
-                            novel++;
-                            break;
-                        }
-                    }
-                }
-            }
-            
-            return new ClaimDistribution(anime, manga, novel);
-        }
-        
-        public ProgressActivity GetProgressActivity(Tracker tracker, string username)
-        {
-            var writes = 0;
-            var edits = 0;
-
-            foreach (var row in tracker.Progress.Skip(1))
-            {
-                if (row.Count > 1)
-                {
-                    if (row[3].ToString().ToLower() == username)
-                    {
-                        writes++;
-                    }
-
-                    if (row[7].ToString().ToLower() == username || row[9].ToString().ToLower() == username)
-                    {
-                        edits++;
-                    }
-                }
-            }
-
-            return new ProgressActivity(writes, edits);
-        }
-
-        public ArchiveActivity GetArchiveActivity(Tracker tracker, string username)
-        {
-            var writes = 0;
-            var edits = 0;
-            var coordinatorEdits = 0;    
-            
-            foreach (var row in tracker.Archive.Skip(1))
-            {
-                if (row.Count > 1)
-                {
-                    if (row[3].ToString().ToLower() == username)
-                    {
-                        writes++;
-                    }
-                
-                    if (row[7].ToString().ToLower()  == username || row[9].ToString().ToLower()  == username)
-                    {
-                        edits++;
-                    }
-
-                    if (row[11].ToString().ToLower() == username)
-                    {
-                        coordinatorEdits++;
-                    }
-                }
-            }
-
-            return new ArchiveActivity(writes, edits, coordinatorEdits);
-        }
-        
-        public async Task<TrackerStatistics> GetUserActivity(string username)
-        {
+            var synopses = new List<Synopsis>();
             var tracker = await GetTrackerAsync();
-            username = username.ToLower();
 
-            if (tracker.Progress != null && tracker.Progress.Count > 0)
+            foreach (var sheet in tracker.Sheets)
             {
-                var progressActivity = GetProgressActivity(tracker, username);
-                var archiveActivity = GetArchiveActivity(tracker, username);
-                var claimDistribution = GetClaimDistribution(tracker, username);
-                return new TrackerStatistics(progressActivity, archiveActivity, claimDistribution);
-            }
+                var data = sheet.Data;
+                
+                var writes = data
+                    .Select(x => x.RowData)
+                    .First()
+                    .Where(x => x.Values.Count >= 11)
+                    .Where(x => x.Values[3].FormattedValue == username);
+                
+                static bool ParseFinal(string text)
+                {
+                    return text switch
+                    {
+                        "Yes" => true,
+                        _ => false
+                    };
+                }
 
-            return null;
+                var result = writes
+                    .Select(write => write.Values)
+                    .Select(cells => new Synopsis
+                    {
+                        DateClaimed = cells[0].FormattedValue,
+                        SeriesTitle = cells[1].FormattedValue,
+                        SeriesHyperlink = cells[1].Hyperlink ?? "No Hyperlink",
+                        ClaimType = Enum.Parse<ClaimType>(cells[2].FormattedValue),
+                        Claimant = cells[3].FormattedValue,
+                        Document = cells[4].Hyperlink ?? "No Hyperlink",
+                        Final = ParseFinal(cells[5].FormattedValue)
+                    });
+
+                synopses.AddRange(result);
+            }
+            
+            // var progress = tracker.Sheets[0];
+            // var data = progress.Data;
+            //
+            // var writes = data
+            //     .Select(x => x.RowData)
+            //     .First()
+            //     .Where(x => x.Values[3].FormattedValue == username);
+            //
+            // static bool ParseFinal(string text)
+            // {
+            //     return text switch
+            //     {
+            //         "Yes" => true,
+            //         _ => false
+            //     };
+            // }
+            //
+            // return writes
+            //     .Select(write => write.Values)
+            //     .Select(cells => new Synopsis
+            //     {
+            //         DateClaimed = cells[0].FormattedValue,
+            //         SeriesTitle = cells[1].FormattedValue,
+            //         SeriesHyperlink = cells[1].Hyperlink ?? "No Hyperlink",
+            //         ClaimType = Enum.Parse<ClaimType>(cells[2].FormattedValue),
+            //         Claimant = cells[3].FormattedValue,
+            //         Document = cells[4].Hyperlink ?? "No Hyperlink",
+            //         Final = ParseFinal(cells[5].FormattedValue)
+            //     })
+            //     .ToList();
+
+            return synopses;
         }
-        
-        public async Task<Tracker> GetTrackerAsync()
+
+        public async Task<Spreadsheet> GetTrackerAsync()
         {
             await using var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read);
-            var credential = await GoogleCredential.FromStreamAsync(stream, CancellationToken.None);
-            credential = credential.CreateScoped();
-            
-            var service = new SheetsService(new BaseClientService.Initializer
+
+            var credential = GoogleCredential
+                .FromStream(stream)
+                .CreateScoped();
+
+            var sheetsService = new SheetsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
-                ApplicationName = ApplicationName
+                ApplicationName = "Hiromi"
             });
             
             const string spreadsheetId = "1wbIqigHMGFWZebum8mQjSL5eQzSAXuWZS-8ewbFX4PI";
-            const string inProgress = "Synopses In Progress";
-            const string archive = "Archive";
-            
-            var formulaRenderOption = SpreadsheetsResource.ValuesResource.GetRequest.ValueRenderOptionEnum.FORMULA;
-            var dateRenderOption = SpreadsheetsResource.ValuesResource.GetRequest.DateTimeRenderOptionEnum.FORMATTEDSTRING;
-            
-            var progressRequest = service.Spreadsheets.Values.Get(spreadsheetId, inProgress);
-            progressRequest.ValueRenderOption = formulaRenderOption;
-            progressRequest.DateTimeRenderOption = dateRenderOption;
-            
-            var progressResponse = await progressRequest.ExecuteAsync();
-            var progressValues = progressResponse.Values;
-            
-            var archiveRequest = service.Spreadsheets.Values.Get(spreadsheetId, archive);
-            archiveRequest.ValueRenderOption = formulaRenderOption;
-            archiveRequest.DateTimeRenderOption = dateRenderOption;
-            
-            var archiveResponse = await archiveRequest.ExecuteAsync();
-            var archiveValues = archiveResponse.Values;
-            
-            return new Tracker(progressValues, archiveValues);
+
+            var request = sheetsService
+                .Spreadsheets
+                .Get(spreadsheetId);
+
+            request.IncludeGridData = true;
+            request.Ranges = new[] {"'Synopses In Progress'!A3:K", "'Archive'!A2:L"};
+
+            return await request.ExecuteAsync();
         }
     }
 }

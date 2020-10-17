@@ -1,10 +1,15 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
 using Hiromi.Bot.TypeReaders;
 using Hiromi.Data;
 using Hiromi.Data.Models;
@@ -64,7 +69,7 @@ namespace Hiromi.Bot
                     CaseSensitiveCommands = false,
                     IgnoreExtraArgs = false,
                 });
-
+                
                 collection
                     .AddMediatR(typeof(StartupService).Assembly)
                     .AddSingleton(discordSocketClient)

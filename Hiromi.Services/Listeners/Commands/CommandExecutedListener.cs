@@ -22,7 +22,7 @@ namespace Hiromi.Services.Listeners.Commands
             {
                 _logger.Fatal(notification.Result.ErrorReason ?? "No Reason");
             }
-
+            
             return Task.CompletedTask;
         }
     }
