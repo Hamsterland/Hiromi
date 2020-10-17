@@ -30,7 +30,7 @@ namespace Hiromi.Bot.Modules
 
         private async Task ReplyAsync(string message)
         {
-            await ReplyAsync($"{Format.Bold(Context.User.Username)}: {message}", allowedMentions: AllowedMentions.None);
+            await ReplyAsync($"{Format.Bold(Context.User.ToString())}: {message}", allowedMentions: AllowedMentions.None);
             await Context.Message.DeleteAsync();
         }
         
