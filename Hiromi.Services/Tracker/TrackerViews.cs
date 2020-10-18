@@ -17,7 +17,7 @@ namespace Hiromi.Services.Tracker
             
             pages
                 .AddRange(synopses
-                    .Take(16)
+                    .Take(40)
                     .Batch(8)
                     .Select(x =>
                     {
@@ -86,7 +86,7 @@ namespace Hiromi.Services.Tracker
                 Options = new PaginatedAppearanceOptions
                 {
                     DisplayInformationIcon = false,
-                    Timeout = TimeSpan.FromSeconds(30)
+                    Timeout = TimeSpan.FromSeconds(60)
                 },
                 
                 Pages = pages,
