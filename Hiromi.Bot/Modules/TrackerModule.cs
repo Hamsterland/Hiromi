@@ -24,7 +24,7 @@ namespace Hiromi.Bot.Modules
 
         [Command("synopsis", RunMode = RunMode.Async)]
         [Alias("search")]
-        [Summary("Looks for a synopsis in the Tracker. The search is not perfect so please be as precise as possible. I.e \"Code Geass Hangyaku no Lelouch\" vs \"Code Geass\"")]
+        [Summary("Looks for a synopsis in the Tracker. The search is not perfect so please be as precise as possible. I.e \"Code Geass Hangyaku\" vs \"Code Geass\". It is also case-sensitive.")]
         public async Task Synopsis([Remainder] string query)
         {
             try
