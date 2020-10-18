@@ -20,7 +20,7 @@ namespace Hiromi.Services.Listeners.Messages
         public async Task Handle(MessageReceivedNotification notification, CancellationToken cancellationToken)
         {
             var received = notification.Message;
-
+            
             var message = new Message
             {
                 MessageId = received.Id,
@@ -28,7 +28,7 @@ namespace Hiromi.Services.Listeners.Messages
                 ChannelId = received.Channel.Id,
                 GuildId = (received.Channel as IGuildChannel).Guild.Id
             };
-
+            
             _hiromiContext.Add(message);
             await _hiromiContext.SaveChangesAsync(cancellationToken);
         }

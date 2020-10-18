@@ -8,7 +8,6 @@ using Discord.Addons.Interactive;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
 using Hiromi.Services;
-using Hiromi.Services.Attributes;
 using Hiromi.Services.Tracker;
 using MoreLinq;
 
