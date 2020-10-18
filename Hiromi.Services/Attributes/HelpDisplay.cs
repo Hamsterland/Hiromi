@@ -2,7 +2,7 @@
 
 namespace Hiromi.Services.Attributes
 {
-    public class HelpDisplay : Attribute
+    public sealed class HelpDisplay : Attribute
     {
         public HelpDisplayOptions Option { get; }
 

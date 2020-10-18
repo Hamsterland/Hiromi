@@ -10,6 +10,7 @@ using Hiromi.Bot.Preconditions;
 using Hiromi.Services;
 using Hiromi.Services.Tracker;
 using MoreLinq;
+using Serilog;
 
 namespace Hiromi.Bot.Modules
 {
@@ -19,22 +20,33 @@ namespace Hiromi.Bot.Modules
     public class TrackerModule : InteractiveBase
     {
         private readonly ITrackerService _trackerService;
+        private readonly ILogger _logger;
 
-        public TrackerModule(ITrackerService trackerService)
+        public TrackerModule(ITrackerService trackerService, ILogger logger)
         {
             _trackerService = trackerService;
+            _logger = logger;
         }
 
         [Command("synopses", RunMode = RunMode.Async)]
         [Summary("Shows current synopses.")]
         public async Task Synopses(string username)
         {
-            var warning = await ReplyAsync($"{Context.User.Mention} I am querying the Tracker, this may take a moment.");
-            var synopses = await _trackerService.GetUserSynopses(username);
-            var pager = TrackerViews.BuildSynopsesPager(synopses, username);
-            await warning.DeleteAsync();
-            var reactions = pager.Pages.Count() == 1 ? default : new ReactionList();
-            await PagedReplyAsync(pager, reactions);
+            try
+            {
+                var warning = await ReplyAsync($"{Context.User.Mention} I am querying the Tracker, this may take a moment.");
+                var synopses = await _trackerService.GetUserSynopses(username);
+                
+                var pager = TrackerViews.BuildSynopsesPager(synopses, username);
+                var reactions = pager.Pages.Count() == 1 ? default : new ReactionList();
+
+                await warning.DeleteAsync();
+                await PagedReplyAsync(pager, reactions);
+            }
+            catch (Exception ex)
+            {
+                await ReplyAsync($"{Context.User.Mention} I could not find any synopses written by the user \"{username}\"");
+            }
         }
     }
 }
