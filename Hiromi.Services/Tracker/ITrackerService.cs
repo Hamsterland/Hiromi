@@ -6,6 +6,7 @@ namespace Hiromi.Services.Tracker
 {
     public interface ITrackerService
     {
+        Task<List<Synopsis>> GetSynopsesAsync(string query);
         Task<List<Synopsis>> GetUserSynopsesAsync(string username);
         Task<Spreadsheet> GetTrackerAsync();
         

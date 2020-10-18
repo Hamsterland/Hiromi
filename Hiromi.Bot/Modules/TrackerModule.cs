@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
-using Hiromi.Bot.Preconditions;
-using Hiromi.Services;
 using Hiromi.Services.Tracker;
-using MoreLinq;
 using Serilog;
 
 namespace Hiromi.Bot.Modules
@@ -27,8 +22,30 @@ namespace Hiromi.Bot.Modules
             _logger = logger;
         }
 
+        [Command("synopsis", RunMode = RunMode.Async)]
+        [Alias("search")]
+        [Summary("Looks for a synopsis in the Tracker")]
+        public async Task Synopsis([Remainder] string query)
+        {
+            try
+            {
+                var warning = await ReplyAsync($"{Context.User.Mention} I am querying the Tracker, this may take a moment.");
+                var synopses = await _trackerService.GetSynopsesAsync(query);
+                
+                var pager = TrackerViews.BuildMatchedSynopsesPager(synopses, query);
+                var reactions = pager.Pages.Count() == 1 ? default : new ReactionList();
+
+                await warning.DeleteAsync();
+                await PagedReplyAsync(pager, reactions);
+            }
+            catch (Exception)
+            {
+                await ReplyAsync($"{Context.User.Mention} I could not find any synopses matching the name \"{query}\"");
+            }
+        }
+        
         [Command("synopses", RunMode = RunMode.Async)]
-        [Summary("Shows current synopses.")]
+        [Summary("Shows current synopses")]
         public async Task Synopses(string username)
         {
             try

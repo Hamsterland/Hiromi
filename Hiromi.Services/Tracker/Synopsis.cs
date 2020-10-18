@@ -11,6 +11,7 @@ namespace Hiromi.Services.Tracker
         public bool Final { get; set; }
         public Claim? E1 { get; set; }
         public Claim? E2 { get; set; }
+        public Ready Ready { get; set; }
         public Claim? E3 { get; set; }
     }
 }
