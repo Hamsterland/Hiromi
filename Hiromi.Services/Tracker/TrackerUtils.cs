@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Hiromi.Services.Tracker
 {
-    public class TrackerUtils
+    public static class TrackerUtils
     {
         public static DateTime ParseDateClaimed(string date)
         {
