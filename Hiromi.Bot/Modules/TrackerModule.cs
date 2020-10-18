@@ -22,9 +22,8 @@ namespace Hiromi.Bot.Modules
             _logger = logger;
         }
 
-        [Command("synopsis", RunMode = RunMode.Async)]
-        [Alias("search")]
-        [Summary("Looks for a synopsis in the Tracker. The search is not perfect so please be as precise as possible. I.e \"Code Geass Hangyaku\" vs \"Code Geass\". It is also case-sensitive.")]
+        [Command("trackersearch", RunMode = RunMode.Async)]
+        [Summary("Looks for a synopsis in the Tracker. The search is not perfect so please be as precise as possible. I.e \"Code Geass Hangyaku\" vs \"Code Geass\". It is also case-sensitive")]
         public async Task Synopsis([Remainder] string query)
         {
             try
@@ -45,7 +44,7 @@ namespace Hiromi.Bot.Modules
         }
         
         [Command("synopses", RunMode = RunMode.Async)]
-        [Summary("Shows current synopses")]
+        [Summary("Shows a user's synopses")]
         public async Task Synopses(string username)
         {
             try
