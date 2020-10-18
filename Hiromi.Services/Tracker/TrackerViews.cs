@@ -27,8 +27,8 @@ namespace Hiromi.Services.Tracker
                         {
                             fieldBuilders.Add(new EmbedFieldBuilder
                             {
-                                Name = "Claimed",
-                                Value = synopsis.DateClaimed.ToString("d"),
+                                Name = "Writer",
+                                Value = synopsis.Claimant,
                                 IsInline = true
                             });
 
@@ -43,6 +43,27 @@ namespace Hiromi.Services.Tracker
                             {
                                 Name = "Type",
                                 Value = $"{synopsis.ClaimType}",
+                                IsInline = true
+                            });
+                            
+                            fieldBuilders.Add(new EmbedFieldBuilder
+                            {
+                                Name = "Editor 1",
+                                Value = synopsis.E1!.Claimant ?? "None",
+                                IsInline = true
+                            });
+                            
+                            fieldBuilders.Add(new EmbedFieldBuilder
+                            {
+                                Name = "Editor 2",
+                                Value = synopsis.E2!.Claimant ?? "None",
+                                IsInline = true
+                            });
+                            
+                            fieldBuilders.Add(new EmbedFieldBuilder
+                            {
+                                Name = "Ready?",
+                                Value = synopsis.Ready,
                                 IsInline = true
                             });
                         }
