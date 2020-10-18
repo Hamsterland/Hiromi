@@ -16,7 +16,6 @@ namespace Hiromi.Bot.Modules
 {
     [Name("Tracker")]
     [Summary("Interact with the Tracker")]
-    [RequireDeveloper]
     public class TrackerModule : InteractiveBase
     {
         private readonly ITrackerService _trackerService;
@@ -35,7 +34,7 @@ namespace Hiromi.Bot.Modules
             try
             {
                 var warning = await ReplyAsync($"{Context.User.Mention} I am querying the Tracker, this may take a moment.");
-                var synopses = await _trackerService.GetUserSynopses(username);
+                var synopses = await _trackerService.GetUserSynopsesAsync(username);
                 
                 var pager = TrackerViews.BuildSynopsesPager(synopses, username);
                 var reactions = pager.Pages.Count() == 1 ? default : new ReactionList();
