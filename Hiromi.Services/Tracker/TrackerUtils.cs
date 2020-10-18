@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq.Expressions;
+using Google.Apis.Sheets.v4.Data;
 
 namespace Hiromi.Services.Tracker
 {
@@ -25,5 +27,10 @@ namespace Hiromi.Services.Tracker
 
             return parsed;
         }
+
+        // public static Expression<Func<RowData, Synopsis>> RowDataToSynopsis = row => new Synopsis()
+        // {
+        //     Claimant = 
+        // };
     }
 }

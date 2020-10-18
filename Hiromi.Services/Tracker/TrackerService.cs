@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using F23.StringSimilarity;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
@@ -14,7 +15,38 @@ namespace Hiromi.Services.Tracker
 {
     public class TrackerService : ITrackerService
     {
-        public async Task<List<Synopsis>> GetUserSynopses(string username)
+        // public async Task<List<Synopsis>> GetSynopsesAsync(string query)
+        // {
+        //     var tracker = await GetTrackerAsync();
+        //     var synopses = new List<Synopsis>();
+        //     var levenshtein = new Levenshtein();
+        //     
+        //     foreach (var sheet in tracker.Sheets)
+        //     {
+        //         var data = sheet.Data;
+        //
+        //         var result = data
+        //             .Select(x => x.RowData)
+        //             .First()
+        //             .Where(x => x.Values.Count >= 11)
+        //             // .SelectMany(row => row.Values, (row, cell) => new {row, cell})
+        //             .OrderByDescending(x => levenshtein.Distance(query, x.Values[1].FormattedValue));
+        //
+        //
+        //
+        //         // var names = synopses.Select(x => x.Values[1].FormattedValue);
+        //         // var levenshtein = new Levenshtein();
+        //         //
+        //         // foreach (var name in names)
+        //         // {
+        //         //     var distance = levenshtein.Distance(query, name);
+        //         //     matches.Add((name, distance));
+        //         // }
+        //     }
+        //
+        // }
+
+        public async Task<List<Synopsis>> GetUserSynopsesAsync(string username)
         {
             var synopses = new List<Synopsis>();
             var tracker = await GetTrackerAsync();
