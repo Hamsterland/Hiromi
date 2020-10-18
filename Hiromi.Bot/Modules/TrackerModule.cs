@@ -43,7 +43,7 @@ namespace Hiromi.Bot.Modules
                 await warning.DeleteAsync();
                 await PagedReplyAsync(pager, reactions);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await ReplyAsync($"{Context.User.Mention} I could not find any synopses written by the user \"{username}\"");
             }
