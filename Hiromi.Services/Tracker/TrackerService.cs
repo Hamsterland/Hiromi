@@ -19,71 +19,71 @@ namespace Hiromi.Services.Tracker
             var synopses = new List<Synopsis>();
             var tracker = await GetTrackerAsync();
 
-            // foreach (var sheet in tracker.Sheets)
-            // {
-            //     var data = sheet.Data;
-            //     
-            //     var writes = data
-            //         .Select(x => x.RowData)
-            //         .First()
-            //         .Where(x => x.Values.Count >= 11)
-            //         .Where(x => x.Values[3].FormattedValue == username);
-            //     
-            //     static bool ParseFinal(string text)
-            //     {
-            //         return text switch
-            //         {
-            //             "Yes" => true,
-            //             _ => false
-            //         };
-            //     }
-            //
-            //     var result = writes
-            //         .Select(write => write.Values)
-            //         .Select(cells => new Synopsis
-            //         {
-            //             DateClaimed = cells[0].FormattedValue,
-            //             SeriesTitle = cells[1].FormattedValue,
-            //             SeriesHyperlink = cells[1].Hyperlink ?? "No Hyperlink",
-            //             ClaimType = Enum.Parse<ClaimType>(cells[2].FormattedValue),
-            //             Claimant = cells[3].FormattedValue,
-            //             Document = cells[4].Hyperlink ?? "No Hyperlink",
-            //             Final = ParseFinal(cells[5].FormattedValue)
-            //         });
-            //
-            //     synopses.AddRange(result);
-            // }
-            
-            var progress = tracker.Sheets[0];
-            var data = progress.Data;
-            
-            var writes = data
-                .Select(x => x.RowData)
-                .First()
-                .Where(x => x.Values[3].FormattedValue == username);
-            
-            static bool ParseFinal(string text)
+            foreach (var sheet in tracker.Sheets)
             {
-                return text switch
+                var data = sheet.Data;
+                
+                var writes = data
+                    .Select(x => x.RowData)
+                    .First()
+                    .Where(x => x.Values.Count >= 11)
+                    .Where(x => x.Values[3].FormattedValue == username);
+                
+                static bool ParseFinal(string text)
                 {
-                    "Yes" => true,
-                    _ => false
-                };
+                    return text switch
+                    {
+                        "Yes" => true,
+                        _ => false
+                    };
+                }
+            
+                var result = writes
+                    .Select(write => write.Values)
+                    .Select(cells => new Synopsis
+                    {
+                        DateClaimed = cells[0].FormattedValue,
+                        SeriesTitle = cells[1].FormattedValue,
+                        SeriesHyperlink = cells[1].Hyperlink ?? "No Hyperlink",
+                        ClaimType = Enum.Parse<ClaimType>(cells[2].FormattedValue),
+                        Claimant = cells[3].FormattedValue,
+                        Document = cells[4].Hyperlink ?? "No Hyperlink",
+                        Final = ParseFinal(cells[5].FormattedValue)
+                    });
+            
+                synopses.AddRange(result);
             }
             
-            return writes
-                .Select(write => write.Values)
-                .Select(cells => new Synopsis
-                {
-                    DateClaimed = cells[0].FormattedValue,
-                    SeriesTitle = cells[1].FormattedValue,
-                    SeriesHyperlink = cells[1].Hyperlink ?? "No Hyperlink",
-                    ClaimType = Enum.Parse<ClaimType>(cells[2].FormattedValue),
-                    Claimant = cells[3].FormattedValue,
-                    Document = cells[4].Hyperlink ?? "No Hyperlink",
-                    Final = ParseFinal(cells[5].FormattedValue)
-                })
-                .ToList();
+            // var progress = tracker.Sheets[0];
+            // var data = progress.Data;
+            //
+            // var writes = data
+            //     .Select(x => x.RowData)
+            //     .First()
+            //     .Where(x => x.Values[3].FormattedValue == username);
+            //
+            // static bool ParseFinal(string text)
+            // {
+            //     return text switch
+            //     {
+            //         "Yes" => true,
+            //         _ => false
+            //     };
+            // }
+            //
+            // return writes
+            //     .Select(write => write.Values)
+            //     .Select(cells => new Synopsis
+            //     {
+            //         DateClaimed = cells[0].FormattedValue,
+            //         SeriesTitle = cells[1].FormattedValue,
+            //         SeriesHyperlink = cells[1].Hyperlink ?? "No Hyperlink",
+            //         ClaimType = Enum.Parse<ClaimType>(cells[2].FormattedValue),
+            //         Claimant = cells[3].FormattedValue,
+            //         Document = cells[4].Hyperlink ?? "No Hyperlink",
+            //         Final = ParseFinal(cells[5].FormattedValue)
+            //     })
+            //     .ToList();
 
             return synopses;
         }
