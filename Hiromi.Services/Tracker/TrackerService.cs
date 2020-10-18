@@ -42,7 +42,7 @@ namespace Hiromi.Services.Tracker
                     .Select(write => write.Values)
                     .Select(cells => new Synopsis
                     {
-                        DateClaimed = cells[0].FormattedValue,
+                        DateClaimed = TrackerUtils.ParseDateClaimed(cells[0].FormattedValue),
                         SeriesTitle = cells[1].FormattedValue,
                         SeriesHyperlink = cells[1].Hyperlink ?? "No Hyperlink",
                         ClaimType = Enum.Parse<ClaimType>(cells[2].FormattedValue),
@@ -85,7 +85,9 @@ namespace Hiromi.Services.Tracker
             //     })
             //     .ToList();
 
-            return synopses;
+            return synopses
+                .OrderByDescending(x => x.DateClaimed)
+                .ToList();
         }
 
         public async Task<Spreadsheet> GetTrackerAsync()

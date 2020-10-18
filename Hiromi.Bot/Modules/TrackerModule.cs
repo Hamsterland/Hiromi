@@ -31,63 +31,10 @@ namespace Hiromi.Bot.Modules
         {
             var warning = await ReplyAsync($"{Context.User.Mention} I am querying the Tracker, this may take a moment.");
             var synopses = await _trackerService.GetUserSynopses(username);
-            var pager = BuildSynopsesPager(synopses);
+            var pager = TrackerViews.BuildSynopsesPager(synopses, username);
             await warning.DeleteAsync();
-            await PagedReplyAsync(pager, new ReactionList());
-        }
-
-        private PaginatedMessage BuildSynopsesPager(List<Synopsis> synopses)
-        {
-            var pages = new List<EmbedPage>();
-            
-            pages
-                .AddRange(synopses
-                    .Batch(8)
-                    .Select(x =>
-                    {
-                        var fieldBuilders = new List<EmbedFieldBuilder>();
-
-                        foreach (var synopsis in x)
-                        {
-                            fieldBuilders.Add(new EmbedFieldBuilder
-                            {
-                                Name = "Claimed",
-                                Value = synopsis.DateClaimed,
-                                IsInline = true
-                            });
-
-                            fieldBuilders.Add(new EmbedFieldBuilder
-                            {
-                                Name = "Series",
-                                Value = $"[{synopsis.SeriesTitle}]({synopsis.Document})",
-                                IsInline = true
-                            });
-
-                            fieldBuilders.Add(new EmbedFieldBuilder
-                            {
-                                Name = "Type",
-                                Value = $"{synopsis.ClaimType}",
-                                IsInline = true
-                            });
-                        }
-
-                        return new EmbedPage
-                        {
-                            TotalFieldMessage = fieldBuilders.Count != 1 ? "Synopses" : "Synopsis",
-                            TotalFieldCountConstant = 1f / 3f,
-                            Fields = fieldBuilders,
-                            Color = Constants.DefaultEmbedColour
-                        };
-                    }));
-
-            return new PaginatedMessage
-            {
-                Author = new EmbedAuthorBuilder()
-                    .WithName(Context.User.ToString())
-                    .WithIconUrl(Context.User.GetAvatarUrl()),
-                
-                Pages = pages
-            };
+            var reactions = pager.Pages.Count() == 1 ? default : new ReactionList();
+            await PagedReplyAsync(pager, reactions);
         }
     }
 }
