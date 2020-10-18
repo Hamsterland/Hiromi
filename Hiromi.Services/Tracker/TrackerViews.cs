@@ -17,8 +17,8 @@ namespace Hiromi.Services.Tracker
             
             pages
                 .AddRange(synopses
-                    .Take(16)
-                    .Batch(4)
+                    .Take(24)
+                    .Batch(8)
                     .Select(x =>
                     {
                         var fieldBuilders = new List<EmbedFieldBuilder>();
@@ -31,7 +31,6 @@ namespace Hiromi.Services.Tracker
                                 Value = $"[{synopsis.SeriesTitle}]({synopsis.Document})",
                                 IsInline = true
                             });
-                            
                             
                             fieldBuilders.Add(new EmbedFieldBuilder
                             {
