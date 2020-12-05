@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord.Addons.Interactive;
 using Discord.Commands;
@@ -14,12 +13,10 @@ namespace Hiromi.Bot.Modules
     public class TrackerModule : InteractiveBase
     {
         private readonly ITrackerService _trackerService;
-        private readonly ILogger _logger;
 
         public TrackerModule(ITrackerService trackerService, ILogger logger)
         {
             _trackerService = trackerService;
-            _logger = logger;
         }
 
         [Command("trackersearch", RunMode = RunMode.Async)]

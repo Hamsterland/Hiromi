@@ -1,10 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Hiromi.Services.Listeners.Messages;
 using Hiromi.Services.Notifications;
+using Hiromi.Services.Tracker;
 using MediatR;
 using Microsoft.Extensions.Hosting;
 
@@ -32,7 +34,7 @@ namespace Hiromi.Services.Listeners
             _discordSocketClient.MessageDeleted += MessageDeleted;
             _discordSocketClient.JoinedGuild += JoinedGuild;
             _discordSocketClient.UserJoined += UserJoined;
-            
+
             _discordSocketClient.Log += Log;
 
             _commandService.CommandExecuted += CommandExecuted;

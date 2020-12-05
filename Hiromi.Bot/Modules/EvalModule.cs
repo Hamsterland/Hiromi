@@ -1,9 +1,11 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Hiromi.Bot.Extensions;
 using Hiromi.Bot.Preconditions;
+using Hiromi.Services.Attributes;
 using Hiromi.Services.Eval;
 
 namespace Hiromi.Bot.Modules
@@ -11,6 +13,7 @@ namespace Hiromi.Bot.Modules
     [Name("Evaluation")]
     [Summary("Evaluate C# Code")]
     [RequireDeveloper]
+    [HelpDisplay(HelpDisplayOptions.Hide)]
     public class EvalModule : ModuleBase<SocketCommandContext>
     {
         private readonly IEvalService _evalService;
