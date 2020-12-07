@@ -6,17 +6,17 @@ namespace Hiromi.Services.Tags
 {
     public static class TagUtilities
     {
-        private const int MAX_TAG_NAME_LENGTH = 50;
-        private const int MAX_TAGS_PER_USER = 15;
+        private const int MaxTagNameLength = 50;
+        private const int MaxTagsPerUser = 25;
         
         public static bool IsWithinNameLimit(string name)
         {
-            return name.Length <= MAX_TAG_NAME_LENGTH;
+            return name.Length <= MaxTagNameLength;
         }
 
         public static bool IsWithinMaxTagLimit(IEnumerable<TagSummary> tags)
         {
-            return tags.Count() <= MAX_TAGS_PER_USER;
+            return tags.Count() <= MaxTagsPerUser;
         }
     }
 }
