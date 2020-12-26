@@ -12,12 +12,6 @@ namespace Hiromi.Data.Models
         
         [Required]
         public ulong GuildId { get; set; }
-        
-        [Required]
-        public bool AllowTags { get; set; }
-        
-        [Required]
-        public bool AllowQuotes { get; set; }
     }
     
     public class GuildConfiguration : IEntityTypeConfiguration<Guild>

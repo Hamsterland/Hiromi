@@ -24,13 +24,11 @@ namespace Hiromi.Services.Stats
         /// </remarks>
         private static void AddMessageStatistics(
             StringBuilder builder,
-            int weekTotal, 
-            int monthTotal,
+            int weekTotal,
             (ulong, int) channelTotal)
         {
             var weekTotalInfo = "message".ToQuantity(weekTotal, "n0");
-            var monthTotalInfo = "message".ToQuantity(monthTotal, "n0");
-            var average = "message".ToQuantity(monthTotal / 30, "n0");
+            var average = "message".ToQuantity(weekTotal / 7, "n0");
 
             var (channelId, total) = channelTotal;
 
@@ -40,7 +38,6 @@ namespace Hiromi.Services.Stats
             builder
                 .AppendLine(Format.Bold("Statistics"))
                 .AppendLine($"Last 7 Days: {weekTotalInfo}")
-                .AppendLine($"Last 30 Days: {monthTotalInfo}")
                 .AppendLine($"Most Active Channel: {channelTotalInfo}")
                 .AppendLine($"Average Per Day: {average}")
                 .AppendLine();

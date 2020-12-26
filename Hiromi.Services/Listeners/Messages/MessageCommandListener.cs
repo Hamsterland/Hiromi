@@ -7,7 +7,6 @@ using Discord.WebSocket;
 using Hiromi.Services.Notifications;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Hiromi.Services.Listeners.Messages
 {

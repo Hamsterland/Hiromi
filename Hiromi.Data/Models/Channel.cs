@@ -21,6 +21,9 @@ namespace Hiromi.Data.Models.Channels
 
         [Required] 
         public bool IsLogChannel { get; set; }
+
+        [Required]
+        public bool AllowTags { get; set; }
     }
 
     public class ChannelConfiguration : IEntityTypeConfiguration<Channel>

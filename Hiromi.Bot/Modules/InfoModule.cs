@@ -54,13 +54,7 @@ namespace Hiromi.Bot.Modules
                 TimeSpan.FromDays(7),
                 Context.Guild.Id,
                 Context.User.Id);
-
-            var monthTotal = await _guildStatsService.GetMessageCountAsync(
-                StatisticsSource.User,
-                TimeSpan.FromDays(30),
-                Context.Guild.Id,
-                Context.User.Id);
-
+            
             var channelTotal = await _guildStatsService.GetMostActiveChannelAndMessageCountAsync(
                 StatisticsSource.User,
                 TimeSpan.FromDays(7),
@@ -73,7 +67,6 @@ namespace Hiromi.Bot.Modules
                 Context.User as SocketGuildUser,
                 Context.Guild,
                 weekTotal,
-                monthTotal,
                 channelTotal,
                 lastMessage.TimeSent);
 

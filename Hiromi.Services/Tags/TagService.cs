@@ -7,6 +7,7 @@ using Discord;
 using Discord.WebSocket;
 using Hiromi.Data;
 using Hiromi.Data.Models;
+using Hiromi.Data.Models.Channels;
 using Hiromi.Data.Models.Tags;
 using Hiromi.Services.Tags.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -34,17 +35,46 @@ namespace Hiromi.Services.Tags
                 .Where(x => x.Name == name)
                 .FirstOrDefaultAsync();
             
-            var channel = _discordSocketClient.GetChannel(channelId) as IMessageChannel;
+            var messageChannel = _discordSocketClient.GetChannel(channelId) as IMessageChannel;
             
+            // Check if the channel is recorded 
+            var channel = await _hiromiContext
+                .Channels
+                .Where(x => x.GuildId == guildId)
+                .Where(x => x.ChannelId == channelId)
+                .FirstOrDefaultAsync();
+            
+            if (channel is null)
+            {
+                channel = new Channel
+                {
+                    GuildId = guildId,
+                    ChannelId = channelId,
+                    AllowTags = true,
+                    IsLogChannel = false
+                };
+                
+                _hiromiContext.Add(channel);
+                await _hiromiContext.SaveChangesAsync();
+            }
+
+            if (!channel.AllowTags)
+            {
+                return; 
+            }
+            
+            // If the Tag is not found, show similar matches
             if (tag is null)
             {
                 var tags = await GetTagSummaryMatches(guildId, name);
                 var embed = TagViews.FormatSimilarTags(name, tags);
-                await channel.SendMessageAsync(embed: embed);
+                await messageChannel.SendMessageAsync(embed: embed);
                 return;
             }
             
-            await channel.SendMessageAsync(tag.Content, allowedMentions: AllowedMentions.None);
+            
+            
+            await messageChannel.SendMessageAsync(tag.Content, allowedMentions: AllowedMentions.None);
 
             tag.Uses++;
             await _hiromiContext.SaveChangesAsync();
@@ -60,7 +90,7 @@ namespace Hiromi.Services.Tags
 
             if (tag != null)
             {
-                throw new TagAlreadyExistsException(default);
+                throw new TagAlreadyExistsException();
             }
 
             _hiromiContext.Add(new Tag
@@ -72,19 +102,6 @@ namespace Hiromi.Services.Tags
                 Content = content
             });
             
-            await _hiromiContext.SaveChangesAsync();
-        }
-        
-        [Obsolete("Please don't use this.")]
-        public async Task ModifyTagAsync(ulong guildId, string name, Action<Tag> action)
-        {
-            var tag = await _hiromiContext
-                .Tags
-                .Where(x => x.GuildId == guildId)
-                .Where(x => x.Name == name)
-                .FirstOrDefaultAsync();
-            
-            action(tag);
             await _hiromiContext.SaveChangesAsync();
         }
 
@@ -140,27 +157,28 @@ namespace Hiromi.Services.Tags
             return tag.OwnerId == user.Id || user.GuildPermissions.ManageMessages;
         }
         
-        public async Task ModifyAllowTagsAsync(ulong guildId, bool allowTags)
+        public async Task ModifyAllowTagsAsync(ulong guildId, ulong channelId, bool allowTags)
         {
-            var guild = await _hiromiContext
-                .Guilds
+            var channel = await _hiromiContext
+                .Channels
                 .Where(x => x.GuildId == guildId)
+                .Where(x => x.ChannelId == channelId)
                 .FirstOrDefaultAsync();
 
-            if (guild is null)
+            if (channel is null)
             {
-                _hiromiContext.Add(new Guild
+                channel = new Channel
                 {
                     GuildId = guildId,
-                    AllowTags = allowTags,
-                    AllowQuotes = true
-                });
+                    ChannelId = channelId,
+                    AllowTags = true,
+                    IsLogChannel = false
+                };
+                
+                _hiromiContext.Add(channel);
             }
-            else
-            {
-                guild.AllowTags = allowTags;
-            }
-            
+
+            channel.AllowTags = allowTags;
             await _hiromiContext.SaveChangesAsync();
         }
     }

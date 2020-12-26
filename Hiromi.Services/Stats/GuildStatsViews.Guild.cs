@@ -31,7 +31,7 @@ namespace Hiromi.Services.Stats
             var builder = new StringBuilder();
             
             AddGuildMetadata(builder, guild);
-            AddMessageStatistics(builder, weekTotal, monthTotal, channelTotal);
+            AddMessageStatistics(builder, weekTotal, channelTotal);
             AddGuildMemberInformation(builder, guild);
             AddGuildRoleInformation(builder, guild);
 

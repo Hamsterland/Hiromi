@@ -27,15 +27,14 @@ namespace Hiromi.Services.Stats
         public static Embed FormatUserInformation(
             SocketGuildUser user,
             IGuild guild,
-            int weekTotal, 
-            int monthTotal,
+            int weekTotal,
             (ulong, int) channelTotal,
             DateTime lastMessageDate)
         {
             var builder = new StringBuilder();
             
             AddUserMetadata(builder, user, lastMessageDate);       
-            AddMessageStatistics(builder, weekTotal, monthTotal, channelTotal);
+            AddMessageStatistics(builder, weekTotal, channelTotal);
             AddUserRoles(builder, user, guild);
 
             return new EmbedBuilder()

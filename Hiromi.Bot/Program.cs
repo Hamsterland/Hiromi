@@ -19,6 +19,8 @@ using Hiromi.Services.Eval;
 using Hiromi.Services.Tracker;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Listeners.Log;
+using Hiromi.Services.Listeners.Messages;
+using Hiromi.Services.Notifications;
 using Hiromi.Services.Reminders;
 using Hiromi.Services.Stats;
 using Hiromi.Services.Tags;

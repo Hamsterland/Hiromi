@@ -12,12 +12,11 @@ namespace Hiromi.Services.Tags
     {
         Task InvokeTagAsync(ulong guildId, ulong channelId, string name);
         Task CreateTagAsync(ulong guildId, ulong authorId, string name, string content);
-        Task ModifyTagAsync(ulong guildId, string name, Action<Tag> action);
         Task DeleteTagAsync(ulong guildId, string name);
         Task<TagSummary> GetTagSummaryAsync(ulong guildId, string name);
         Task<IEnumerable<TagSummary>> GetTagSummaries(ulong guildId, Expression<Func<Tag, bool>> criteria);
         Task<IEnumerable<TagSummary>> GetTagSummaryMatches(ulong guildId, string name);
         Task<bool> HasMaintenancePermissions(string name, IGuildUser user);
-        Task ModifyAllowTagsAsync(ulong guildId, bool allowTags);
+        Task ModifyAllowTagsAsync(ulong guildId, ulong channelId, bool allowTags);
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -20,21 +22,51 @@ namespace Hiromi.Bot.Modules
         }
 
         [Command("tags enable")]
-        [Summary("Enables tags in the Guild")]
+        [Summary("Enables tags in a channel")]
         [RequireDeveloperOrPermission(GuildPermission.ManageMessages)]
-        public async Task Enable()
+        public async Task Enable(IGuildChannel channel)
         {
-            await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, true);
-            await ReplyAsync("Enabled Tags.");
+            await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, channel.Id, true);
+            await ReplyAsync($"Enabled tags in #{channel.Name}");
         }
         
         [Command("tags disable")]
-        [Summary("Enables tags in the Guild")]
+        [Summary("Disables tags in a channel")]
         [RequireDeveloperOrPermission(GuildPermission.ManageMessages)]
-        public async Task Disable()
+        public async Task Disable(IGuildChannel channel)
         {
-            await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, false);
-            await ReplyAsync("Disabled Tags.");
+            await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, channel.Id, false);
+            await ReplyAsync($"Disabled tags in #{channel.Name}");
+        }
+
+        [Command("tags enable *")]
+        [Summary("Enables tags")]
+        [RequireDeveloperOrPermission(GuildPermission.ManageMessages)]
+        public async Task EnableGlobal()
+        {
+            var channels = Context.Guild.Channels;
+            
+            foreach (var channel in channels)
+            {
+                await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, channel.Id, true);
+            }
+
+            await ReplyAsync("Enabled tags across the Guild.");
+        }
+        
+        [Command("tags disable *")]
+        [Summary("Enables tags")]
+        [RequireDeveloperOrPermission(GuildPermission.ManageMessages)]
+        public async Task DisableGlobal()
+        {
+            var channels = Context.Guild.Channels;
+            
+            foreach (var channel in channels)
+            {
+                await _tagService.ModifyAllowTagsAsync(Context.Guild.Id, channel.Id, false);
+            }
+
+            await ReplyAsync("Disabled tags across the Guild.");
         }
 
         [Command("tag")]
@@ -91,21 +123,6 @@ namespace Hiromi.Bot.Modules
         }
         
 
-        [Command("tag transfer")]
-        [Summary("Transfers ownership of a tag")]
-        [RequireEnabledInChannel]
-        public async Task Transfer(string name, IGuildUser user)
-        {
-            if (!await _tagService.HasMaintenancePermissions(name, Context.User as IGuildUser))
-            {
-                await ReplyAsync($"{Context.User.Mention} you cannot transfer tag \"{name}\"");
-                return;
-            }
-
-            await _tagService.ModifyTagAsync(Context.Guild.Id, name, x => x.OwnerId = user.Id);
-            await ReplyAsync($"Transferred tag \"{name}\" to {user}.");
-        }
-
         [Command("tag info")]
         [Summary("Provides tag information")]
         [RequireEnabledInChannel]
@@ -121,7 +138,6 @@ namespace Hiromi.Bot.Modules
 
             var author = Context.Guild.GetUser(tag.AuthorId);
             var owner = Context.Guild.GetUser(tag.OwnerId);
-
             var embed = TagViews.FormatTagInfo(author, owner, tag);
             await ReplyAsync(embed: embed);
         }
@@ -133,7 +149,6 @@ namespace Hiromi.Bot.Modules
         {
             user ??= Context.User as IGuildUser;
             var tags = await _tagService.GetTagSummaries(Context.Guild.Id, x => x.OwnerId == user.Id);
-            
             var embed = TagViews.FormatUserTags(user, tags);
             await ReplyAsync(embed: embed);
         }

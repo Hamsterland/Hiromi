@@ -38,10 +38,7 @@ namespace Hiromi.Services.Listeners.Messages
                 .Guilds
                 .FirstOrDefaultAsync(x => x.GuildId == channel.GuildId, cancellationToken);
 
-            if (guild is null || !guild.AllowTags)
-            {
-                return;
-            }
+            // Check if channel allows Tags
             
             var match = _inlineTagRegex.Match(message.Content);
             if (match.Success)

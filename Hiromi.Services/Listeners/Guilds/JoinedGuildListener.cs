@@ -32,9 +32,7 @@ namespace Hiromi.Services.Listeners.Guilds
 
             _hiromiContext.Add(new Guild
             {
-                GuildId = guild.Id,
-                AllowTags = true,
-                AllowQuotes = true
+                GuildId = guild.Id
             });
 
             await _hiromiContext.SaveChangesAsync(cancellationToken);

@@ -49,18 +49,11 @@ namespace Hiromi.Listeners
                 _hiromiContext.Add(new Guild
                 {
                     GuildId = guildId,
-                    AllowTags = true,
-                    AllowQuotes = true
                 });
 
                 await _hiromiContext.SaveChangesAsync(cancellationToken);
             }
-
-            if (guild != null && !guild.AllowTags)
-            {
-                return;
-            }
-
+            
             var matches = _messageLinkRegex.Matches(message.Content);
             foreach (Match match in matches)
             {
