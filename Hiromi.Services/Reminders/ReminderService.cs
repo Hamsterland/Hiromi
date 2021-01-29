@@ -78,7 +78,7 @@ namespace Hiromi.Services.Reminders
                 .Select(ReminderSummary.FromEntityProjection)
                 .ToListAsync();
         }
-
+    
         public async Task<ReminderSummary> GetActiveReminder(ulong userId, int id)
         {
             var reminders = await GetActiveReminders(userId);

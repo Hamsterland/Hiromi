@@ -20,6 +20,7 @@ using Hiromi.Services.Tracker;
 using Hiromi.Services.Listeners;
 using Hiromi.Services.Listeners.Log;
 using Hiromi.Services.Listeners.Messages;
+using Hiromi.Services.Monkey;
 using Hiromi.Services.Notifications;
 using Hiromi.Services.Reminders;
 using Hiromi.Services.Stats;
@@ -71,7 +72,7 @@ namespace Hiromi.Bot
                     CaseSensitiveCommands = false,
                     IgnoreExtraArgs = false,
                 });
-                
+
                 collection
                     .AddMediatR(typeof(StartupService).Assembly)
                     .AddSingleton(discordSocketClient)
@@ -94,7 +95,8 @@ namespace Hiromi.Bot
                     .AddScoped<IReminderService, ReminderService>()
                     .AddScoped<IGuildStatsService, GuildStatsService>()
                     .AddScoped<ITrackerService, TrackerService>()
-                    .AddScoped<IEvalService, EvalService>();
+                    .AddScoped<IEvalService, EvalService>()
+                    .AddScoped<IMonkeyService, MonkeyService>();
             })
             .RunConsoleAsync();
     }

@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Hiromi.Bot.Preconditions;
 using Hiromi.Services.Attributes;
+using Hiromi.Services.Monkey;
 using Hiromi.Services.Text;
 
 namespace Hiromi.Bot.Modules
@@ -13,6 +14,21 @@ namespace Hiromi.Bot.Modules
     [RequireEnabledInChannel]
     public class TextModule : ModuleBase<SocketCommandContext>
     {
+        private readonly IMonkeyService _monkeyService;
+
+        public TextModule(IMonkeyService monkeyService)
+        {
+            _monkeyService = monkeyService;
+        }
+
+        [Command("where")]
+        [Summary("Where??!??!?!")]
+        public async Task Where(string name)
+        {
+            var path = _monkeyService.DrawMonkey(name);
+            await Context.Channel.SendFileAsync(path);
+        }
+        
         [Command("echo")]
         [Summary("Echoes a message")]
         public async Task Echo([Remainder] string message)
